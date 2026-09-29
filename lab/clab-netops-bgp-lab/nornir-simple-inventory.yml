@@ -1,0 +1,21 @@
+---
+client-a:
+    username: 
+    password: 
+    platform: linux
+    hostname: 172.20.20.3
+client-b:
+    username: 
+    password: 
+    platform: linux
+    hostname: 172.20.20.2
+router-a:
+    username: 
+    password: 
+    platform: linux
+    hostname: 172.20.20.5
+router-b:
+    username: 
+    password: 
+    platform: linux
+    hostname: 172.20.20.4

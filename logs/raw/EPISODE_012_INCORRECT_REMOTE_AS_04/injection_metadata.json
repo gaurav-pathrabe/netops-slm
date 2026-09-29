@@ -1,0 +1,10 @@
+{
+  "episode_id": "EPISODE_012_INCORRECT_REMOTE_AS_04",
+  "incident_family": "incorrect_remote_as",
+  "target_container": "clab-netops-bgp-lab-router-a",
+  "target_device": "router-a",
+  "peer_ip": "10.77.0.2",
+  "injection_timestamp": "2026-09-29T14:08:35.816689+00:00",
+  "captured_at": "2026-09-29T14:08:47.564991+00:00",
+  "ground_truth_fault": "incorrect_remote_as"
+}

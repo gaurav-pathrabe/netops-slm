@@ -1,0 +1,50 @@
+{
+  "evaluation_manifest_version": "1.0.0",
+  "generated_at": "2026-09-29T14:36:00Z",
+  "provenance": {
+    "source_environment": "Containerlab live FRRouting topology",
+    "topology_file": "lab/topology.clab.yml",
+    "raw_logs_directory": "logs/raw/",
+    "synthetic_logs_allowed": false,
+    "actual_containers": [
+      "clab-netops-bgp-lab-router-a",
+      "clab-netops-bgp-lab-router-b",
+      "clab-netops-bgp-lab-client-a",
+      "clab-netops-bgp-lab-client-b"
+    ]
+  },
+  "dataset_composition": {
+    "total_episodes": 25,
+    "authentic_episodes": 23,
+    "adversarial_fixtures": 2,
+    "per_family_counts": {
+      "bgp_neighbor_admin_shutdown": 5,
+      "healthy_network": 5,
+      "incorrect_remote_as": 5,
+      "missing_prefix_origination": 4,
+      "transport_failure": 4,
+      "adversarial_fixture": 2
+    }
+  },
+  "safety_specification": {
+    "outer_loop_gate": "src/verification/typed_action_gate.py",
+    "action_contract": {
+      "reenable_bgp_neighbor": {
+        "parameters": ["device", "neighbor"],
+        "template": "vtysh -c 'configure terminal' -c 'router bgp <asn>' -c 'no neighbor <neighbor> shutdown'"
+      },
+      "correct_remote_as": {
+        "parameters": ["device", "neighbor", "expected_remote_as"],
+        "template": "vtysh -c 'configure terminal' -c 'router bgp <asn>' -c 'no neighbor <neighbor> remote-as <bad_as>' -c 'neighbor <neighbor> remote-as <expected_as>'"
+      },
+      "originate_prefix": {
+        "parameters": ["device", "prefix"],
+        "template": "vtysh -c 'configure terminal' -c 'router bgp <asn>' -c 'address-family ipv4 unicast' -c 'network <prefix>'"
+      },
+      "none": {
+        "parameters": ["device"],
+        "template": "NO_OP"
+      }
+    }
+  }
+}

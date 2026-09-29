@@ -1,0 +1,255 @@
+{
+  "name": "netops-bgp-lab",
+  "type": "clab",
+  "clab": {
+    "config": {
+      "prefix": "clab",
+      "mgmt": {
+        "network": "clab",
+        "bridge": "br-1b76f89bfbb6",
+        "ipv4-subnet": "172.20.20.0/24",
+        "ipv4-gw": "172.20.20.1",
+        "ipv6-subnet": "3fff:172:20:20::/64",
+        "ipv6-gw": "3fff:172:20:20::1",
+        "external-access": true
+      }
+    }
+  },
+  "ssh-pub-keys": [],
+  "nodes": {
+    "client-a": {
+      "index": "0",
+      "shortname": "client-a",
+      "longname": "clab-netops-bgp-lab-client-a",
+      "fqdn": "client-a.netops-bgp-lab.io",
+      "group": "",
+      "labdir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/client-a",
+      "kind": "linux",
+      "image": "wbitt/network-multitool:3.22.2",
+      "mgmt-net": "",
+      "mgmt-intf": "",
+      "mgmt-ipv4-address": "172.20.20.3",
+      "mgmt-ipv4-prefix-length": 24,
+      "mgmt-ipv6-address": "3fff:172:20:20::3",
+      "mgmt-ipv6-prefix-length": 64,
+      "mac-address": "",
+      "labels": {
+        "clab-mgmt-net-bridge": "br-1b76f89bfbb6",
+        "clab-node-group": "",
+        "clab-node-kind": "linux",
+        "clab-node-lab-dir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/client-a",
+        "clab-node-longname": "clab-netops-bgp-lab-client-a",
+        "clab-node-name": "client-a",
+        "clab-node-type": "",
+        "clab-owner": "root",
+        "clab-topo-file": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/topology.clab.yml",
+        "containerlab": "netops-bgp-lab"
+      },
+      "port-bindings": [
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 11443,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 1180,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 443,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 80,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    "client-b": {
+      "index": "1",
+      "shortname": "client-b",
+      "longname": "clab-netops-bgp-lab-client-b",
+      "fqdn": "client-b.netops-bgp-lab.io",
+      "group": "",
+      "labdir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/client-b",
+      "kind": "linux",
+      "image": "wbitt/network-multitool:3.22.2",
+      "mgmt-net": "",
+      "mgmt-intf": "",
+      "mgmt-ipv4-address": "172.20.20.2",
+      "mgmt-ipv4-prefix-length": 24,
+      "mgmt-ipv6-address": "3fff:172:20:20::2",
+      "mgmt-ipv6-prefix-length": 64,
+      "mac-address": "",
+      "labels": {
+        "clab-mgmt-net-bridge": "br-1b76f89bfbb6",
+        "clab-node-group": "",
+        "clab-node-kind": "linux",
+        "clab-node-lab-dir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/client-b",
+        "clab-node-longname": "clab-netops-bgp-lab-client-b",
+        "clab-node-name": "client-b",
+        "clab-node-type": "",
+        "clab-owner": "root",
+        "clab-topo-file": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/topology.clab.yml",
+        "containerlab": "netops-bgp-lab"
+      },
+      "port-bindings": [
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 80,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 11443,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 1180,
+          "protocol": "tcp"
+        },
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 443,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    "router-a": {
+      "index": "2",
+      "shortname": "router-a",
+      "longname": "clab-netops-bgp-lab-router-a",
+      "fqdn": "router-a.netops-bgp-lab.io",
+      "group": "",
+      "labdir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/router-a",
+      "kind": "linux",
+      "image": "quay.io/frrouting/frr:containerlab-10.7.1",
+      "mgmt-net": "",
+      "mgmt-intf": "",
+      "mgmt-ipv4-address": "172.20.20.5",
+      "mgmt-ipv4-prefix-length": 24,
+      "mgmt-ipv6-address": "3fff:172:20:20::5",
+      "mgmt-ipv6-prefix-length": 64,
+      "mac-address": "",
+      "labels": {
+        "clab-mgmt-net-bridge": "br-1b76f89bfbb6",
+        "clab-node-group": "",
+        "clab-node-kind": "linux",
+        "clab-node-lab-dir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/router-a",
+        "clab-node-longname": "clab-netops-bgp-lab-router-a",
+        "clab-node-name": "router-a",
+        "clab-node-type": "",
+        "clab-owner": "root",
+        "clab-topo-file": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/topology.clab.yml",
+        "containerlab": "netops-bgp-lab"
+      },
+      "port-bindings": [
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 22,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    "router-b": {
+      "index": "3",
+      "shortname": "router-b",
+      "longname": "clab-netops-bgp-lab-router-b",
+      "fqdn": "router-b.netops-bgp-lab.io",
+      "group": "",
+      "labdir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/router-b",
+      "kind": "linux",
+      "image": "quay.io/frrouting/frr:containerlab-10.7.1",
+      "mgmt-net": "",
+      "mgmt-intf": "",
+      "mgmt-ipv4-address": "172.20.20.4",
+      "mgmt-ipv4-prefix-length": 24,
+      "mgmt-ipv6-address": "3fff:172:20:20::4",
+      "mgmt-ipv6-prefix-length": 64,
+      "mac-address": "",
+      "labels": {
+        "clab-mgmt-net-bridge": "br-1b76f89bfbb6",
+        "clab-node-group": "",
+        "clab-node-kind": "linux",
+        "clab-node-lab-dir": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/clab-netops-bgp-lab/router-b",
+        "clab-node-longname": "clab-netops-bgp-lab-router-b",
+        "clab-node-name": "router-b",
+        "clab-node-type": "",
+        "clab-owner": "root",
+        "clab-topo-file": "/mnt/c/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/topology.clab.yml",
+        "containerlab": "netops-bgp-lab"
+      },
+      "port-bindings": [
+        {
+          "host-ip": "",
+          "host-port": 0,
+          "port": 22,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "links": [
+    {
+      "endpoints": {
+        "a": {
+          "node": "client-a",
+          "interface": "eth1",
+          "mac": "aa:c1:ab:85:1e:0c",
+          "peer": "z"
+        },
+        "z": {
+          "node": "router-a",
+          "interface": "eth1",
+          "mac": "aa:c1:ab:31:cf:11",
+          "peer": "a"
+        }
+      }
+    },
+    {
+      "endpoints": {
+        "a": {
+          "node": "router-a",
+          "interface": "eth2",
+          "mac": "aa:c1:ab:92:01:f9",
+          "peer": "z"
+        },
+        "z": {
+          "node": "router-b",
+          "interface": "eth1",
+          "mac": "aa:c1:ab:7d:14:12",
+          "peer": "a"
+        }
+      }
+    },
+    {
+      "endpoints": {
+        "a": {
+          "node": "router-b",
+          "interface": "eth2",
+          "mac": "aa:c1:ab:fc:54:cb",
+          "peer": "z"
+        },
+        "z": {
+          "node": "client-b",
+          "interface": "eth1",
+          "mac": "aa:c1:ab:4f:36:98",
+          "peer": "a"
+        }
+      }
+    }
+  ]
+}

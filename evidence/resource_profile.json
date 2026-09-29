@@ -1,0 +1,57 @@
+{
+  "profile_date": "2026-09-29T14:35:00Z",
+  "hardware": {
+    "host_cpu": "Intel Core i5-1240P (12 cores, 16 threads, up to 4.40 GHz)",
+    "host_ram_bytes": 16867389440,
+    "host_ram_human": "15.71 GB",
+    "gpu_model": "NVIDIA GeForce RTX 2050 Laptop GPU",
+    "gpu_vram_total_mb": 4096,
+    "gpu_driver": "610.43.02",
+    "cuda_version": "13.3"
+  },
+  "runtime_environment": {
+    "os": "Windows 11 + WSL2 (Ubuntu 24.04 LTS)",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "docker_engine": "29.8.1",
+    "containerlab_version": "0.79.0",
+    "ollama_version": "0.34.4"
+  },
+  "measured_resource_consumption": {
+    "containerlab_topology": {
+      "containers_running": 4,
+      "container_names": [
+        "clab-netops-bgp-lab-router-a",
+        "clab-netops-bgp-lab-router-b",
+        "clab-netops-bgp-lab-client-a",
+        "clab-netops-bgp-lab-client-b"
+      ],
+      "total_memory_usage_mb": 185.4,
+      "frr_per_container_mb": 45.2
+    },
+    "ollama_slm_engine": {
+      "model_name": "qwen2.5-coder:1.5b",
+      "model_format": "GGUF Q4_K_M",
+      "model_disk_size_mb": 986,
+      "vram_allocated_mb": 1193,
+      "vram_utilization_percent": 29.1,
+      "cold_start_time_seconds": 37.98,
+      "warm_inference_latency_avg_seconds": 4.52,
+      "min_warm_inference_seconds": 0.33
+    },
+    "deterministic_runbook": {
+      "memory_overhead_bytes": 0,
+      "average_latency_ms": 0.04
+    }
+  },
+  "safety_and_governance": {
+    "safety_gate": "TypedActionGate",
+    "allowlisted_actions": [
+      "reenable_bgp_neighbor",
+      "correct_remote_as",
+      "originate_prefix",
+      "none"
+    ],
+    "unauthorized_commands_executed": 0,
+    "guard_interception_rate_percent": 100.0
+  }
+}

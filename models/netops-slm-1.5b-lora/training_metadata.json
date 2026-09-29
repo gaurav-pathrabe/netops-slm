@@ -1,0 +1,11 @@
+{
+  "model_name": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "max_steps": 40,
+  "learning_rate": 0.0002,
+  "peak_vram_gb": 3.39,
+  "training_time_seconds": 130.77,
+  "trained_on": "NVIDIA GeForce RTX 2050 (4GB VRAM)",
+  "dataset_episodes": 11
+}

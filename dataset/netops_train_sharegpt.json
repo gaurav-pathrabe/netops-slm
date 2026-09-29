@@ -1,0 +1,222 @@
+[
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: spine01-fra-dc (10.250.0.1)\nFault Category: BGP_SESSION_DOWN\nSyslog Trigger: %BGP-3-ADJCHANGE\nMessage: <187>241: *Sep 25 17:20:11.452: %BGP-3-NOTIFICATION: sent to neighbor 10.100.1.2 4/0 (hold time expired) 0 bytes\nKey Anomaly Metrics:\n  - bgp_peer: 10.100.1.2\n  - FAULT_state: IDLE\n  - prefixes_dropped: 45200\n  - flap_count: 5\nIncident Impact: BGP Hold Timer expired on spine-leaf interconnect, dropping 45,200 routes.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nBGP peering session dropped due to hold timer expiration with neighbor 10.100.1.2. Flap count (5) indicates recurrent keepalive drop or high link queue congestion.\n\n### Blast Radius & Secondary Risk\nSpine-leaf interconnect lost. 45,200 routes dropped and diverted to secondary spine spine02-fra-dc. Increased load on remaining ECMP links.\n\n### Safe CLI Remediation\n```cisco-nxos\nconfigure terminal\nrouter bgp 65001\n  neighbor 10.100.1.2\n    timers 3 9\n    soft-reconfiguration inbound always\n    no shutdown\nexit\ncopy running-config startup-config\n```\n\n### Post-Remediation Verification\n```text\nshow ip bgp summary | include 10.100.1.2\nshow ip bgp neighbors 10.100.1.2 | include BGP state\nshow ip route summary\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0001",
+      "device": "spine01-fra-dc",
+      "category": "BGP_SESSION_DOWN",
+      "severity": 3
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: leaf-ai-cluster04 (10.250.4.12)\nFault Category: ROCEV2_PFC_STORM\nSyslog Trigger: %ETHPORT-2-IF_DOWN_PFC_WATCHDOG\nMessage: <186>812: *Sep 25 17:21:05.109: %ETHPORT-2-IF_DOWN_PFC_WATCHDOG: Ethernet1/32 is down due to PFC Watchdog dead-lock mitigation\nKey Anomaly Metrics:\n  - interface: Ethernet1/32\n  - pfc_rx_pause_frames: 4210980\n  - queue_depth_bytes: 16777216\n  - HIGH_buffer_utilization_pct: 98.4%\nIncident Impact: PFC Pause frame storm detected in GPU AI training fabric; Watchdog disabled interface to prevent fabric deadlock.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nRoCEv2 Priority Flow Control (PFC) pause storm on interface Ethernet1/32. Continuous pause frame reception (4.2M frames) consumed 98.4% buffer depth, triggering PFC Watchdog dead-lock prevention.\n\n### Blast Radius & Secondary Risk\nGPU AI cluster training node 4 isolated. NCCL collective communications stalled on GPU ring topology.\n\n### Safe CLI Remediation\n```cisco-nxos\nconfigure terminal\ninterface Ethernet1/32\n  priority-flow-control mode on\n  priority-flow-control watch-dog interval 100 shutdown-action drop\n  shutdown\n  no shutdown\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow queuing interface Ethernet1/32\nshow interface priority-flow-control\nshow hardware internal buffer info\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0002",
+      "device": "leaf-ai-cluster04",
+      "category": "ROCEV2_PFC_STORM",
+      "severity": 2
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: wan-gw01-mumbai (172.16.0.1)\nFault Category: OSPF_MTU_MISMATCH\nSyslog Trigger: %OSPF-4-ADJCHANGE\nMessage: <188>119: *Sep 25 17:22:33.201: %OSPF-4-ERRRCV: Received DBD packet with MTU 9000 from 172.16.1.2 on GigabitEthernet0/0/2 greater than MTU 1500\nKey Anomaly Metrics:\n  - interface: GigabitEthernet0/0/2\n  - local_mtu: 1500\n  - remote_mtu: 9000\n  - FAULT_ospf_state: EXSTART\nIncident Impact: OSPF neighbor stuck in EXSTART due to MTU mismatch on WAN link.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nOSPF neighbor state stuck in EXSTART. Local MTU on GigabitEthernet0/0/2 is 1500 bytes while remote peer 172.16.1.2 sends Database Description (DBD) packets with MTU 9000 (Jumbo frame).\n\n### Blast Radius & Secondary Risk\nWAN gateway unable to establish OSPF adjacency; primary WAN transit link offline, routing via high-latency backup.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\ninterface GigabitEthernet0/0/2\n  mtu 9000\n  ip mtu 9000\n  no shutdown\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow ip ospf neighbor GigabitEthernet0/0/2\nshow ip interface GigabitEthernet0/0/2 | include MTU\nshow ip route ospf\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0003",
+      "device": "wan-gw01-mumbai",
+      "category": "OSPF_MTU_MISMATCH",
+      "severity": 4
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: core01-subsea-oman (10.200.0.5)\nFault Category: OPTICAL_FIBER_DEGRADATION\nSyslog Trigger: %TRANSCEIVER-3-OPTICAL_POWER_LOW\nMessage: <187>552: *Sep 25 17:23:44.881: %TRANSCEIVER-3-OPTICAL_LOW: TenGigabitEthernet1/1/1 Rx power (-24.8 dBm) below warning threshold (-20.0 dBm)\nKey Anomaly Metrics:\n  - interface: TenGigabitEthernet1/1/1\n  - CRITICAL_rx_power_dbm: -24.8 dBm (LOW)\n  - fec_uncorrectable_errors: 18450\n  - crc_drops: 4512\nIncident Impact: Subsea optical transponder Rx signal degrading rapidly, causing Forward Error Correction (FEC) bit failures.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nOptical physical-layer degradation. TenGigabitEthernet1/1/1 Rx power is -24.8 dBm (below -20 dBm threshold), triggering 18,450 FEC uncorrectable bit errors and 4,512 CRC drops.\n\n### Blast Radius & Secondary Risk\nSubsea core transport link suffering packet loss and jitter. Catastrophic link failure imminent.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\nrouter bgp 64800\n  neighbor 10.200.0.6 route-map DRAIN_TRAFFIC out\nroute-map DRAIN_TRAFFIC permit 10\n  set as-path prepend 64800 64800 64800\n  set community 64800:666 additive\ninterface TenGigabitEthernet1/1/1\n  description MAINTENANCE_OPTIC_CLEAN_REPLACE\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow interfaces TenGigabitEthernet1/1/1 transceiver detail\nshow interfaces TenGigabitEthernet1/1/1 | include drops|CRC\nshow ip bgp neighbors 10.200.0.6 advertised-routes\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0004",
+      "device": "core01-subsea-oman",
+      "category": "OPTICAL_FIBER_DEGRADATION",
+      "severity": 3
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: dist-sw02-bldg1 (10.50.2.2)\nFault Category: SPANNING_TREE_ROOT_INTRUSION\nSyslog Trigger: %SPANTREE-2-ROOTGUARD_BLOCK\nMessage: <186>993: *Sep 25 17:24:19.004: %SPANTREE-2-ROOTGUARD_BLOCK: Root guard blocking port GigabitEthernet0/24 on VLAN0010 due to received superior BPDU\nKey Anomaly Metrics:\n  - interface: GigabitEthernet0/24\n  - vlan: 10\n  - FAULT_spantree_state: ROOT_INCONSISTENT\n  - blocked: True\nIncident Impact: Rogue switch advertised superior BPDU on access port; Spanning Tree Root Guard blocked the port to prevent topology hijack.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nSpanning Tree Root Guard breach on access switch port GigabitEthernet0/24 in VLAN 10. Port received superior BPDU from an unauthorized switch, forcing port into ROOT_INCONSISTENT state.\n\n### Blast Radius & Secondary Risk\nVLAN 10 protected against layer-2 topology hijacking; rogue switch isolated on port Gi0/24.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\ninterface GigabitEthernet0/24\n  switchport mode access\n  switchport access vlan 10\n  spanning-tree bpduguard enable\n  spanning-tree portfast\n  shutdown\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow spanning-tree inconsistentports\nshow mac address-table interface GigabitEthernet0/24\nshow cdp neighbors GigabitEthernet0/24 detail\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0005",
+      "device": "dist-sw02-bldg1",
+      "category": "SPANNING_TREE_ROOT_INTRUSION",
+      "severity": 2
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: edge-border-router01 (198.51.100.1)\nFault Category: BGP_ROUTE_LEAK\nSyslog Trigger: %ROUTING-1-PREFIX_LIMIT_EXCEEDED\nMessage: <185>402: *Sep 25 17:25:01.672: %ROUTING-1-BGP_PREFIX_LEAK: Peer 203.0.113.5 (AS64512) advertised 185,000 global prefixes exceeding limit of 500\nKey Anomaly Metrics:\n  - peer_as: 64512\n  - prefixes_received: 185000\n  - threshold_limit: 500\n  - action: TEARDOWN\nIncident Impact: BGP Route Leak detected from multihomed stub customer; maximum prefix shutdown executed.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nBGP route leak detected from multihomed stub customer AS64512 (198.51.100.1). Received 185,000 routes breaching maximum-prefix threshold of 500, triggering immediate automated peering teardown.\n\n### Blast Radius & Secondary Risk\nPrevented upstream ISP routing table pollution and global routing transit hijacking.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\nrouter bgp 65500\n  neighbor 198.51.100.1\n    maximum-prefix 500 80 restart 15\n    route-map CUSTOMER_INGRESS_FILTER in\nip prefix-list CUSTOMER_VALID_PREFIXES permit 198.51.100.0/24 le 32\nroute-map CUSTOMER_INGRESS_FILTER permit 10\n  match ip address prefix-list CUSTOMER_VALID_PREFIXES\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow ip bgp neighbors 198.51.100.1 received-routes\nshow ip bgp neighbors 198.51.100.1 | include Prefix activity\nshow ip bgp summary\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0006",
+      "device": "edge-border-router01",
+      "category": "BGP_ROUTE_LEAK",
+      "severity": 1
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: leaf-rack12 (10.10.12.1)\nFault Category: INTERFACE_CRC_BURST\nSyslog Trigger: %LINEPROTO-3-UPDOWN\nMessage: <187>301: *Sep 25 17:25:40.118: %LINEPROTO-3-UPDOWN: Line protocol on Interface HundredGigE0/0/0/1, changed state to down (CRC error rate exceeded)\nKey Anomaly Metrics:\n  - interface: HundredGigE0/0/0/1\n  - crc_errors_per_sec: 8420\n  - input_errors: 492100\n  - link_flaps_last_10m: 8\nIncident Impact: DAC cable fault on 100G uplink switch port causing continuous CRC error bursts.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nPhysical DAC cable degradation on HundredGigE0/0/0/1 with 8,420 CRC errors/sec and 8 link flaps within 10 minutes. Signal integrity loss on 100G PAM4 high-speed SERDES.\n\n### Blast Radius & Secondary Risk\nLeaf-to-spine uplink flapping, degrading ECMP packet hashing and causing microburst reordering.\n\n### Safe CLI Remediation\n```cisco-iosxr\ninterface HundredGigE0/0/0/1\n  shutdown\n  description ISOLATED_DAC_CABLE_FAULT\ncommit\n```\n\n### Post-Remediation Verification\n```text\nshow interfaces HundredGigE0/0/0/1 detail\nshow controllers HundredGigE0/0/0/1 internal\nshow bundle-ether 100\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0007",
+      "device": "leaf-rack12",
+      "category": "INTERFACE_CRC_BURST",
+      "severity": 3
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: aggr-sw01 (10.20.1.1)\nFault Category: HSRP_SPLIT_BRAIN\nSyslog Trigger: %HSRP-2-STATECHANGE\nMessage: <186>771: *Sep 25 17:26:12.511: %HSRP-2-ACTIVE_CONFLICT: Vlan20 Grp 20 duplicate active router 10.20.20.2 detected with higher priority\nKey Anomaly Metrics:\n  - vlan: 20\n  - hsrp_group: 20\n  - remote_ip: 10.20.20.2\n  - heartbeat_lost: True\nIncident Impact: HSRP heartbeat lost across inter-switch link; dual active routers causing IP gateway IP conflict.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nHSRP split-brain condition on VLAN 20. Loss of HSRP heartbeat across inter-switch link (ISL) caused both aggr-sw01 and 10.20.20.2 to declare Active gateway state.\n\n### Blast Radius & Secondary Risk\nDuplicate default gateway IP across network; downstream host ARP cache flapping and sporadic packet blackholing.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\ninterface Vlan20\n  standby 20 priority 110\n  standby 20 preempt delay minimum 30\n  standby 20 authentication md5 key-string HSRP_SECURE_AUTH\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow standby brief\nshow standby Vlan20 detail\nshow ip arp vlan 20\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0008",
+      "device": "aggr-sw01",
+      "category": "HSRP_SPLIT_BRAIN",
+      "severity": 2
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: core-nexus-9k (10.0.0.1)\nFault Category: MEMORY_EXHAUSTION_TCAM\nSyslog Trigger: %PLATFORM-2-TCAM_FULL\nMessage: <186>918: *Sep 25 17:27:01.319: %PLATFORM-2-TCAM_FULL: Hardware TCAM table exhausted for IPv4 unicast routing. 12,410 routes running in software slow-path\nKey Anomaly Metrics:\n  - HIGH_tcam_usage_pct: 100.0%\n  - software_forwarded_pps: 850000\n  - HIGH_cpu_utilization_pct: 94.2%\nIncident Impact: Hardware TCAM full due to unaggregated routing table; packets punted to supervisor CPU causing latency spike.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nHardware TCAM table exhaustion for IPv4 Unicast FIB on core Nexus 9000. 12,410 routes running in software slow-path, punting 850,000 pps to supervisor CPU (94.2% CPU load).\n\n### Blast Radius & Secondary Risk\nPacket latency spikes across all datacenter zones; critical management and BGP control plane packets at risk of drops.\n\n### Safe CLI Remediation\n```cisco-nxos\nconfigure terminal\nhardware profile tcam resource-allocation ipv4-routing max\nrouter bgp 65000\n  address-family ipv4 unicast\n    aggregate-address 10.0.0.0/8 summary-only\n    aggregate-address 172.16.0.0/12 summary-only\nexit\ncopy running-config startup-config\n```\n\n### Post-Remediation Verification\n```text\nshow hardware capacity forwarding\nshow system resources\nshow processes cpu sort\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0009",
+      "device": "core-nexus-9k",
+      "category": "MEMORY_EXHAUSTION_TCAM",
+      "severity": 2
+    }
+  },
+  {
+    "conversations": [
+      {
+        "from": "system",
+        "value": "You are NetOps-SLM, an autonomous Level-3 Network Reliability Engineer and 6G Telemetry Specialist. Given an incident telemetry snapshot, provide:\n1. Root Cause Diagnosis: Exact failure mechanism.\n2. Blast Radius & Topology Risk: Affected services, ECMP paths, and secondary risk.\n3. Safe Remediation CLI: Exact syntax for Cisco IOS-XE, NX-OS, or Arista EOS.\n4. Verification & Rollback: Validation commands to confirm health."
+      },
+      {
+        "from": "human",
+        "value": "[INCIDENT TELEMETRY SNAPSHOT]\nDevice: ptp-grandmaster-edge (10.30.0.10)\nFault Category: NTP_CLOCK_DESYNC\nSyslog Trigger: %NTP-4-UNSYNC\nMessage: <188>114: *Sep 25 17:28:15.908: %NTP-4-UNSYNC: System clock offset (1450.2 ms) exceeds stratum threshold; PTP synchronization lost\nKey Anomaly Metrics:\n  - DESYNC_ntp_offset_ms: 1450.2 ms\n  - ptp_lock: False\n  - stratum: 16\nIncident Impact: Grandmaster clock reference lost; high-frequency financial telemetry timestamps out of compliance.\n[TASK: Diagnose root cause, predict secondary topology impact, and output verified rollback-safe CLI remediation.]"
+      },
+      {
+        "from": "gpt",
+        "value": "### Root Cause Diagnosis\nNTP/PTP clock desynchronization (1450.2 ms offset). PTP lock lost on Grandmaster edge, breaching sub-microsecond requirements for financial telemetry and 6G RAN frame alignment.\n\n### Blast Radius & Secondary Risk\nHigh-frequency trade time-stamping non-compliant with MiFID II; distributed 6G beamforming frame alignment degraded.\n\n### Safe CLI Remediation\n```cisco-ios\nconfigure terminal\nptp mode boundary\nptp domain 0\nntp server 10.30.0.1 prefer\nntp server 10.30.0.2\ninterface GigabitEthernet0/1\n  ptp enable\nexit\n```\n\n### Post-Remediation Verification\n```text\nshow ptp clock\nshow ntp associations\nshow ntp status\n```"
+      }
+    ],
+    "metadata": {
+      "incident_id": "INC-0010",
+      "device": "ptp-grandmaster-edge",
+      "category": "NTP_CLOCK_DESYNC",
+      "severity": 4
+    }
+  }
+]

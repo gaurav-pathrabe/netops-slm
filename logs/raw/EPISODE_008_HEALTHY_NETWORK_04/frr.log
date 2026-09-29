@@ -1,0 +1,50 @@
+[54|bgpd] done
+[63|staticd] done
+[68|watchfrr] done
+2026/09/29 14:03:32 WATCHFRR: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded
+2026/09/29 14:03:32 WATCHFRR: [QDG3Y-BY5TN] zebra state -> up : connect succeeded
+2026/09/29 14:03:32 WATCHFRR: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded
+2026/09/29 14:03:32 WATCHFRR: [QDG3Y-BY5TN] staticd state -> up : connect succeeded
+2026/09/29 14:03:32 WATCHFRR: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify
+2026/09/29 14:03:48 WATCHFRR: [NG1AJ-FP2TQ] Terminating on signal
+2026/09/29 14:04:56 WATCHFRR: [ZG9QC-QRCJZ] failed to mkdir "/var/tmp/frr/watchfrr.7": File exists
+2026/09/29 14:04:56 WATCHFRR: [M1DC0-ZDNYJ] crashlog and per-thread log buffering unavailable!
+2026/09/29 14:04:56 WATCHFRR: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/09/29 14:04:56 WATCHFRR: [T83RR-8SM5G] watchfrr 10.7.1_git starting: vty@0
+2026/09/29 14:04:56 WATCHFRR: [ZCJ3S-SPH5S] mgmtd state -> down : initial connection attempt failed
+2026/09/29 14:04:56 WATCHFRR: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed
+2026/09/29 14:04:56 WATCHFRR: [ZCJ3S-SPH5S] bgpd state -> down : initial connection attempt failed
+2026/09/29 14:04:56 WATCHFRR: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed
+2026/09/29 14:04:56 WATCHFRR: [YFT0P-5Q5YX] Forked background command [pid 17]: /usr/lib/frr/watchfrr.sh restart all
+2026/09/29 14:04:56 MGMTD: [ZG9QC-QRCJZ] failed to mkdir "/var/tmp/frr/mgmtd.29": File exists
+2026/09/29 14:04:56 MGMTD: [M1DC0-ZDNYJ] crashlog and per-thread log buffering unavailable!
+2026/09/29 14:04:56 MGMTD: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/09/29 14:04:56 ZEBRA: [ZG9QC-QRCJZ] failed to mkdir "/var/tmp/frr/zebra.31": File exists
+2026/09/29 14:04:56 ZEBRA: [M1DC0-ZDNYJ] crashlog and per-thread log buffering unavailable!
+2026/09/29 14:04:56 ZEBRA: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/09/29 14:04:56 ZEBRA: [SAPXX-HP5B5][EC 4043309108] Extended Error: failed to retrieve link settings
+2026/09/29 14:04:56 ZEBRA: [WVJCK-PPMGD][EC 4043309093] generic-netlink-cmd (NS 0) error: Not supported, type=RTM_DELADDR(21), seq=3, pid=31
+2026/09/29 14:04:56 ZEBRA: [QBKSZ-0KHCW][EC 4043309138] Disabling MPLS support (no kernel support)
+2026/09/29 14:04:56 BGP: [ZG9QC-QRCJZ] failed to mkdir "/var/tmp/frr/bgpd.36": File exists
+2026/09/29 14:04:56 BGP: [M1DC0-ZDNYJ] crashlog and per-thread log buffering unavailable!
+2026/09/29 14:04:56 BGP: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/09/29 14:04:56 STATIC: [ZG9QC-QRCJZ] failed to mkdir "/var/tmp/frr/staticd.43": File exists
+2026/09/29 14:04:56 STATIC: [M1DC0-ZDNYJ] crashlog and per-thread log buffering unavailable!
+2026/09/29 14:04:56 STATIC: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+[47|mgmtd] sending configuration
+[48|zebra] sending configuration
+[54|bgpd] sending configuration
+[63|staticd] sending configuration
+[48|zebra] done
+Waiting for children to finish applying config...
+[68|watchfrr] sending configuration
+[47|mgmtd] done
+2026/09/29 14:04:56 WATCHFRR: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
+[54|bgpd] done
+[68|watchfrr] done
+[63|staticd] done
+2026/09/29 14:04:56 WATCHFRR: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded
+2026/09/29 14:04:56 WATCHFRR: [QDG3Y-BY5TN] zebra state -> up : connect succeeded
+2026/09/29 14:04:56 WATCHFRR: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded
+2026/09/29 14:04:56 WATCHFRR: [QDG3Y-BY5TN] staticd state -> up : connect succeeded
+2026/09/29 14:04:56 WATCHFRR: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify
