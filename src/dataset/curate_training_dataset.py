@@ -31,8 +31,8 @@ SYSTEM_PROMPT = (
     '  "diagnosis": "<string>",\n'
     '  "evidence_ids": ["<id>"],\n'
     '  "affected_nodes": ["<device>"],\n'
-    '  "action": "reenable_bgp_neighbor" | "none",\n'
-    '  "parameters": {"device": "<device>", "neighbor": "<ip>"},\n'
+    '  "action": "reenable_bgp_neighbor" | "correct_remote_as" | "originate_prefix" | "none",\n'
+    '  "parameters": {"device": "<device>", "neighbor": "<ip>", "expected_remote_as": <int>, "prefix": "<cidr>"},\n'
     '  "verification_checks": ["bgp_session", "expected_routes", "endpoint_ping"],\n'
     '  "abstain": true | false\n'
     "}\n"
@@ -41,6 +41,7 @@ SYSTEM_PROMPT = (
     "- If the failure is ambiguous or outside authorized lab inventory, abstain must be true.\n"
     "- Never output raw shell commands."
 )
+
 
 
 def load_raw_lab_episodes(raw_dir: str) -> List[Dict[str, Any]]:

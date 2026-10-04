@@ -58,10 +58,11 @@ def compact_snapshot(snap: Dict[str, Any]) -> Dict[str, Any]:
 
     compact_peers = {}
     for p_ip, p_data in peers.items():
-        if isinstance(p_data, dict):
             compact_peers[p_ip] = {
                 "state": p_data.get("state"),
                 "remoteAs": p_data.get("remoteAs"),
+                "localAs": p_data.get("localAs"),
+                "desc": p_data.get("desc"),
                 "pfxRcd": p_data.get("pfxRcd", 0),
                 "adminShut": p_data.get("adminShut", False)
             }
