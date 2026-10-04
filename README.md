@@ -6,12 +6,19 @@
 [![Containerlab](https://img.shields.io/badge/Containerlab-v0.79-blueviolet.svg)](https://containerlab.dev/)
 [![Models](https://img.shields.io/badge/Models-Qwen2.5--Coder%201.5B%20%7C%207B-brightgreen.svg)](https://huggingface.co/Qwen)
 [![Spend](https://img.shields.io/badge/Cloud%20Spend-%240.00%20(Free%20Tier)-success.svg)](https://colab.research.google.com/)
+[![Branch: main (1.5B Edge)](https://img.shields.io/badge/Branch-main_(1.5B_Edge)-blue.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
 
 An open-source, evidence-based network diagnosis and automated remediation system for IP/BGP routing infrastructure. Features an end-to-end **Two-Tier Co-Pilot Architecture**:
 
 1. **Tier-1 Fast-Path Actuator:** Sub-millisecond (**0.068 ms**), deterministic remediation executing through a strict, sandboxed [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) with 0% hallucination risk.
 2. **Tier-2 Explanatory Copilot:** Cloud-adapted 8B Foundation Model (`Qwen2.5-Coder-7B-Instruct`) fine-tuned with 4-bit QLoRA on authentic Containerlab telemetry, generating human-grade Root Cause Analysis (RCA) tickets and post-mortems for Network Operations Centers (NOC).
+
+> [!NOTE]
+> ### 📍 Looking for the Local Edge 1.5B SLM Implementation?
+> This branch (`feature/netops-v2-cloud-8b-benchmark`) contains our **8B Cloud Scaling, Two-Tier Co-Pilot, and 50-Episode Expansion** research.
+> * If you want to explore the **edge-native 1.5B SLM architecture tailored for local execution on consumer hardware (NVIDIA GeForce RTX 2050 4GB, $0.00 cloud spend)**, check out our **[`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main)** branch.
+> * See the [Section 2 Benchmark Matrix](#2-comprehensive-empirical-benchmark-matrix) below for the side-by-side comparison across Edge 1.5B and Cloud 8B.
 
 ---
 
