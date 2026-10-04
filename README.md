@@ -6,14 +6,41 @@
 [![Zero-Cloud Cost](https://img.shields.io/badge/Spend-$0.00_Local_WSL2-blue.svg)](#6-hardware--resource-profile)
 [![Safety Boundary](https://img.shields.io/badge/Safety_Gate-100%25_Intercepted_(0_Breaches)-brightgreen.svg)](#3-outer-loop-safety-architecture)
 [![Telemetry Provenance](https://img.shields.io/badge/Telemetry-100%25_Authentic_FRR_(Zero_Synthetic)-orange.svg)](#4-authentic-telemetry-dataset)
+[![Branch: v2 Cloud 8B Benchmark](https://img.shields.io/badge/Branch-v2_Cloud_8B_Benchmark-8A2BE2.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
 
 > **Defensible, Empirical Benchmarking of Small Language Models (SLMs) vs. Deterministic Runbooks on Authentic Containerlab FRRouting Telemetry.**
 
 An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/BGP routing faults directly on consumer laptop hardware (NVIDIA GeForce RTX 2050 4GB). Investigates whether a 4-bit quantized Small Language Model (`Qwen2.5-Coder-1.5B`) fine-tuned on real routing telemetry can safely self-heal network outages—or whether a deterministic, rule-based runbook remains the optimal production engine.
 
-> 🚀 **Looking for 8B Cloud Scaling & Two-Tier Co-Pilot?**  
-> Check out the [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark) branch for the cloud foundation benchmark (`Qwen2.5-Coder-7B-Instruct`), 50-episode live container expansion, and the Two-Tier Co-Pilot engine (0.068 ms Fast-Path + 11.2s Explanatory RCA).
+> [!IMPORTANT]
+> ### 🚀 NetOps-SLM v2 is Live: 8B Cloud Scaling & Two-Tier Co-Pilot Architecture
+> While this `main` branch documents our initial **1.5B edge SLM deployment on consumer hardware (RTX 2050 4GB)**, we scaled this research into an **8B Foundation Model & Two-Tier Co-Pilot** on our dedicated feature branch:
+> 
+> **👉 Explore the Branch:** [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
+> 
+> * **8B Cloud Foundation Benchmark:** Live evaluation of `Qwen2.5-Coder-7B-Instruct` on NVIDIA Tesla T4 ($0.00 spend).
+> * **Two-Tier Production Co-Pilot:** 0.068 ms Deterministic Fast-Path Actuator + 11.2s Explanatory RCA Copilot.
+> * **The "Sysadmin Reflex" Discovery:** Forensic analysis of why zero-shot models mistake BGP Idle states for stopped daemons.
+> * **50-Episode Telemetry Expansion:** Dataset expanded to 73 authentic Containerlab FRR incidents.
+> * **4-Bit QLoRA Fine-Tuning:** 3-Epoch domain adaptation on Tesla T4, reducing false-positive network actuations from 66.7% to **0.0%**.
+> * **Interactive Colab Notebook:** Run the complete benchmark and training pipeline in Google Colab with 1 click.
+> 
+> *See [Section 10](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch) below for the full comparative analysis.*
+
+---
+
+### Table of Contents
+- [1. Executive Summary & Core Scientific Findings](#1-executive-summary--core-scientific-findings)
+- [2. Definitive 3-Way Benchmark Results](#2-definitive-3-way-benchmark-results)
+- [3. Outer-Loop Safety Architecture](#3-outer-loop-safety-architecture)
+- [4. Authentic Telemetry Dataset](#4-authentic-telemetry-dataset)
+- [5. Reproducibility & Step-by-Step Execution](#5-reproducibility--step-by-step-execution)
+- [6. Hardware & Resource Profile](#6-hardware--resource-profile)
+- [7. Failure Taxonomy & Boundary Enforcement](#7-failure-taxonomy--boundary-enforcement)
+- [8. Repository Topology](#8-repository-topology)
+- [9. Academic Alignment & Citations](#9-academic-alignment--citations)
+- [10. 🚀 The Next Frontier: Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
 
 ---
 
@@ -276,3 +303,61 @@ NetOps_LLM_and_Jobs/
 3. **Autonomous 6G Non-Terrestrial Networks:**
    - *Citation:* M. Giordani & M. Zorzi, University of Padua (SIGNET Lab), *"Non-Terrestrial Networks in the 6G Era"*, IEEE Network (2024).
    - *Application:* On-premises edge intelligence deployed within strict sovereign telecom boundaries at zero external cloud cost.
+
+---
+
+## 10. The Next Frontier: Scaling to 8B & The Two-Tier Co-Pilot Architecture (v2 Branch)
+
+While the research on this `main` branch proved that a 1.5B edge SLM can achieve **100% schema compliance and safety gating on consumer hardware**, the model scored only **11.1% on multi-step protocol state machine reasoning** (`EPISODE_003_BAD_AS`).
+
+To resolve this limitation, we launched an extensive investigation on our dedicated feature branch:  
+👉 **Branch:** [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
+
+### 10.1 What We Built & Tested on the Feature Branch:
+
+1. **8B Cloud Foundation Benchmark:**  
+   Scaled the architecture to an 8B foundation code model (`Qwen/Qwen2.5-Coder-7B-Instruct`) deployed in free cloud environments (Google Colab Tesla T4, 15GB VRAM, ~5.5GB 4-bit NF4 footprint) at **$0.00 cloud spend**.
+2. **Discovery of the "Sysadmin Reflex":**  
+   We proved scientifically that zero-shot LLMs exhibit a statistical pretraining reflex equating `"state": "Idle"` or `"down"` with stopped Linux daemons, triggering an aggressive urge to restart services (`reenable_bgp_neighbor`) even on healthy networks (66.7% false-positive rate) or severed physical carrier links.
+3. **50 Fresh Live Incidents Captured (73 Total):**  
+   Expanded the authentic dataset from 23 to **73 live Containerlab FRRouting container episodes**, introducing randomized ASN cycling (`65999`, `65099`, `65100`, `65200`, `65333`, `65400`) while strictly preserving the 7 held-out test episodes.
+4. **Cloud 4-Bit QLoRA Fine-Tuning Pipeline:**  
+   Fine-tuned the 8B model across 3 epochs (168 optimization steps, 40.3M trainable parameters) with prompt token masking and snapshot compacting on Tesla T4 in **770.9s**, converging loss from 0.5921 to **0.4062**.
+5. **Eradication of False-Positive Network Actuations:**  
+   In post-fine-tuning evaluation against the invariant test suite, **false-positive actuations dropped from 66.7% to 0.0%**. The fine-tuned 8B model learned strict operational restraint: *do not flap sessions when telemetry shows no software fault or unfixable physical wire drops*.
+6. **The Two-Tier Production Co-Pilot Division:**  
+   - **Tier-1 Fast-Path Actuator:** Runs in **0.068 ms** deterministically through [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) (164,000× faster than generative models), executing sub-millisecond MTTR with 0% hallucination risk.
+   - **Tier-2 Explanatory Copilot:** Runs in **~11.2 seconds**, generating human-grade Root Cause Analysis (RCA) post-mortem tickets for NOC incident logs.
+
+### 10.2 Comparative Matrix: Local 1.5B Edge vs. Cloud 8B Foundation
+
+| Architectural Dimension | `main` Branch (Local 1.5B Edge) | `feature/netops-v2-cloud-8b-benchmark` (Cloud 8B v2) |
+| :--- | :--- | :--- |
+| **Model** | `Qwen2.5-Coder-1.5B-Instruct` | `Qwen2.5-Coder-7B-Instruct` (8B class) |
+| **Target Hardware** | NVIDIA GeForce RTX 2050 (4 GB VRAM) | Google Colab Tesla T4 (15.0 GB VRAM) |
+| **Cloud Financial Cost** | **$0.00** | **$0.00 (Free Tier)** |
+| **Dataset Size** | 23 authentic episodes | **73 authentic episodes (50 live expansion)** |
+| **TypedActionGate Pass Rate** | 100.0% (7/7) | **100.0% (7/7)** |
+| **False-Positive Action on Healthy Nets** | 0.0% (Tuned) | **0.0% (3-Epoch QLoRA Tuned)** |
+| **Physical Carrier Loss Handling** | Abstained (`none`) | **Abstained (`none`)** |
+| **Two-Tier Co-Pilot Support** | Single-tier actuator | **Dual-path: 0.068 ms Actuator + 11.2s Explanatory RCA** |
+| **Interactive Cloud Notebook** | N/A (Local WSL2 only) | **[notebooks/NetOps_8B_Cloud_Benchmark.ipynb](https://github.com/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/notebooks/NetOps_8B_Cloud_Benchmark.ipynb)** |
+| **Empirical Scientific Report** | [reports/benchmark_held_out.md](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/benchmark_held_out.md) | **[reports/colab_8b_empirical_results.md](https://github.com/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/reports/colab_8b_empirical_results.md)** |
+
+### 10.3 How to Explore the v2 Branch:
+
+To view the code, artifacts, and experiments on the 8B branch:
+```bash
+# Switch to the v2 cloud benchmark branch
+git checkout feature/netops-v2-cloud-8b-benchmark
+
+# Inspect the 8B cloud training pipeline
+cat src/training/train_8b_cloud_lora.py
+
+# Inspect the Two-Tier Co-Pilot engine
+cat src/co_pilot/two_tier_copilot.py
+```
+
+Or open the interactive notebook directly in Google Colab:  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/notebooks/NetOps_8B_Cloud_Benchmark.ipynb)
+
