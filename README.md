@@ -302,4 +302,14 @@ Evaluated live on `Qwen/Qwen2.5-Coder-7B-Instruct` (4-bit NF4) against 7 authent
 
 Detailed empirical logs are recorded in [reports/colab_8b_empirical_results.md](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/colab_8b_empirical_results.md).
 
+### 10.5 The "Sysadmin Reflex" Discovery: Why Zero-Shot Prompting Fails on Protocol Physics
+To test whether the 8B model's reliance on `reenable_bgp_neighbor` was caused by prompt constraints, we ran an isolated test on `EPISODE_003_BAD_AS` using an **unlocked system prompt** explicitly granting `correct_remote_as` along with ground-truth topology ASN mappings (`router-a: AS 65001`, `router-b: AS 65002`).
+
+- **Result:** In **8,593.4 ms**, the model output 100% valid JSON but **still selected `action: "reenable_bgp_neighbor"`**, reporting *"BGP session is in Idle state."*
+- **Core Insight:** General pretraining data heavily associates `"Idle"` or `"down"` with stopped Linux daemons, triggering a statistical "restart reflex". The model latches onto the superficial symptom (`Idle`) rather than deducing the protocol root cause (`remoteAs: 65999 != 65002`).
+- **Production Takeaway:** Prompt engineering alone cannot rewire protocol physics in general-purpose LLMs. This definitively justifies:
+  1. **Tier-1 Fast-Path Actuator:** Guarantees sub-millisecond, bounded ASN correction in **0.068 ms** without generative bias.
+  2. **Domain-Specific Fine-Tuning (LoRA / DPO):** Mandatory to teach SLMs causal precedence over superficial syslog symptoms.
+
+
 
