@@ -249,13 +249,10 @@ sudo containerlab destroy -t topology.clab.yml --cleanup
 ```text
 NetOps_LLM_and_Jobs/
 ├── README.md                             # Comprehensive project root guide (This document)
-├── NETOPS_SLM_TOTAL_MASTER_PLAN.md       # Measured local execution master plan (Milestones 0 to 6)
-├── NETOPS_SLM_6G_PRODUCTION_PLAN.md      # 6G autonomous architecture & academic alignment
-├── HOW_TO_CREATE_YOUR_NETOPS_LLM.md      # Dynamic LoRA-MoE production reference
 ├── lab/
 │   ├── topology.clab.yml                 # Pinned 2-router FRR Containerlab topology
 │   ├── SETUP_WSL_CONTAINERLAB.md         # Step-by-step WSL2 & Containerlab setup guide
-│   ├── configs/                          # Router A & Router B daemons/frr.conf
+│   ├── config/                           # Router A & Router B daemons/frr.conf
 │   └── scripts/
 │       ├── deploy.sh                     # Automated deploy & health verification script
 │       ├── record_episode.py             # Authentic container telemetry collector
