@@ -200,6 +200,18 @@ def format_sharegpt_example(episode: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+# Strict held-out benchmark test suite (invariant across all milestones)
+HELD_OUT_TEST_IDS = {
+    "EPISODE_003_BAD_AS",
+    "EPISODE_016_MISSING_PREFIX_ORIGINATION_04",
+    "EPISODE_005_HEALTHY_NETWORK_01",
+    "EPISODE_006_HEALTHY_NETWORK_02",
+    "EPISODE_001_BGP_NEIGHBOR_ADMIN_SHUTDOWN_01",
+    "EPISODE_002_HEALTHY",
+    "EPISODE_018_TRANSPORT_FAILURE_02"
+}
+
+
 def curate_datasets(raw_dir: str, output_dir: str):
     """Generates train, validation, and test datasets from authentic container captures."""
     import random
@@ -218,19 +230,20 @@ def curate_datasets(raw_dir: str, output_dir: str):
         for ex in dataset_examples:
             f.write(json.dumps(ex) + "\n")
 
-    # Split into train (50%), val (25%), test (25%)
+    # Isolate held-out benchmark test set
+    test_set = [ex for ex in dataset_examples if ex["metadata"].get("episode_id") in HELD_OUT_TEST_IDS]
+    train_pool = [ex for ex in dataset_examples if ex["metadata"].get("episode_id") not in HELD_OUT_TEST_IDS]
+
+    # Split train_pool into train (85%) and val (15%)
     random.seed(42)
-    shuffled = list(dataset_examples)
+    shuffled = list(train_pool)
     random.shuffle(shuffled)
     n = len(shuffled)
-    n_train = max(1, int(n * 0.5))
-    n_val = max(1, int(n * 0.25))
-
+    n_train = max(1, int(n * 0.85)) if n > 1 else n
     train_set = shuffled[:n_train]
-    val_set = shuffled[n_train:n_train + n_val]
-    test_set = shuffled[n_train + n_val:]
-    if not test_set:
-        test_set = val_set
+    val_set = shuffled[n_train:]
+    if not val_set and len(train_set) > 1:
+        val_set = [train_set.pop()]
 
     for name, subset in [("train.jsonl", train_set), ("validation.jsonl", val_set), ("test.jsonl", test_set)]:
         path = os.path.join(output_dir, name)
@@ -240,6 +253,7 @@ def curate_datasets(raw_dir: str, output_dir: str):
         print(f"[+] Wrote {len(subset)} episodes to {path}")
 
     print(f"[+] Successfully curated {len(dataset_examples)} authentic examples into {output_dir}")
+
 
 
 if __name__ == "__main__":

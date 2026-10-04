@@ -83,12 +83,16 @@ def record_live_episode(episode_id: str, family: str, target_device: str = "rout
     elif family == "healthy_network":
         print("[2/5] Healthy control run: No fault injected.")
     elif family == "incorrect_remote_as":
-        print(f"[2/5] Injecting fault: setting neighbor {peer_ip} remote-as to 65999...")
+        # Cycle through diverse wrong ASNs to prevent overfitting to 65999
+        bad_asns = [65999, 65099, 65100, 65200, 65333, 65400]
+        # Choose based on hash of episode_id
+        bad_as = bad_asns[sum(ord(c) for c in episode_id) % len(bad_asns)]
+        print(f"[2/5] Injecting fault: setting neighbor {peer_ip} remote-as to {bad_as}...")
         run_docker([
             "docker", "exec", container_name, "vtysh",
             "-c", "configure terminal",
             "-c", "router bgp 65001",
-            "-c", f"neighbor {peer_ip} remote-as 65999"
+            "-c", f"neighbor {peer_ip} remote-as {bad_as}"
         ])
     elif family == "missing_prefix_origination":
         print("[2/5] Injecting fault: removing prefix 10.77.1.0/24 origination...")
@@ -187,16 +191,27 @@ SUPPORTED_FAMILIES = [
     "transport_failure"
 ]
 
-def batch_record(total_per_family: int = 10):
+def batch_record(total_per_family: int = 10, start_index: Optional[int] = None):
     """Batches authentic captures across all 5 supported incident families."""
-    print(f"[*] Starting batch authentic recording: {total_per_family} episodes per family...")
-    count = 0
+    if start_index is None:
+        existing = [d for d in os.listdir(RAW_LOGS_DIR) if os.path.isdir(os.path.join(RAW_LOGS_DIR, d))]
+        max_idx = 0
+        for d in existing:
+            if d.startswith("EPISODE_"):
+                parts = d.split("_")
+                if len(parts) >= 2 and parts[1].isdigit():
+                    max_idx = max(max_idx, int(parts[1]))
+        start_index = max_idx + 1
+
+    print(f"[*] Starting batch authentic recording from index {start_index:03d}: {total_per_family} episodes per family...")
+    count = start_index - 1
     for family in SUPPORTED_FAMILIES:
         for idx in range(1, total_per_family + 1):
             count += 1
             ep_id = f"EPISODE_{count:03d}_{family.upper()}_{idx:02d}"
             record_live_episode(ep_id, family)
-    print(f"[✓] Successfully captured {count} authentic episodes from live containers.")
+    total_new = count - start_index + 1
+    print(f"[✓] Successfully captured {total_new} authentic episodes from live containers.")
 
 
 if __name__ == "__main__":
@@ -206,10 +221,11 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="router-a")
     parser.add_argument("--peer", type=str, default="10.77.0.2")
     parser.add_argument("--batch", type=int, default=None, help="Run batch capture of N episodes per family")
+    parser.add_argument("--start_index", type=int, default=None, help="Starting integer index for episode IDs")
     args = parser.parse_args()
 
     if args.batch:
-        batch_record(args.batch)
+        batch_record(args.batch, start_index=args.start_index)
     elif args.episode_id and args.family:
         record_live_episode(args.episode_id, args.family, target_device=args.device, peer_ip=args.peer)
     else:
