@@ -279,7 +279,7 @@ NetOps_LLM_and_Jobs/
 │   │   ├── deploy.sh                            # One-touch lab deploy & convergence verification
 │   │   ├── record_episode.py                    # Live container fault injector & telemetry recorder
 │   │   └── verify_health.py                     # ICMP ping & BGP state assertion engine
-│   └── configs/                                 # Router-A & Router-B FRR configurations
+│   └── config/                                  # Router-A & Router-B FRR configurations
 ├── logs/raw/                                    # 73 authentic Containerlab episodes (EPISODE_001 - 070)
 ├── dataset/
 │   ├── manifest.jsonl                           # Master manifest of all 73 authentic lab episodes
