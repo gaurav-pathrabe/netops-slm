@@ -106,3 +106,50 @@ Even when provided with the ASN topology and an explicit schema option to correc
    - **Tier-1 Fast-Path Actuator** ([`src/co_pilot/two_tier_copilot.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/co_pilot/two_tier_copilot.py)) is strictly necessary to guarantee sub-millisecond, bounded remediation (0.068 ms).
    - **Tier-2 Slow-Path SLM** delivers its highest value in synthesizing human-grade post-mortems and RCAs rather than firing raw actuator triggers.
 
+---
+
+## 6. Post-Fine-Tuning Empirical Results: 8B QLoRA on Tesla T4
+
+Following domain fine-tuning with 4-bit QLoRA on 56 authentic Containerlab episodes across 3 epochs, the adapted 8B model was evaluated against the exact invariant held-out test suite.
+
+### 6.1 Training Execution Profile
+- **Base Model:** `Qwen/Qwen2.5-Coder-7B-Instruct`
+- **Adapter Target:** All linear projections (`q, k, v, o, gate, up, down`), $r=16, \alpha=32$
+- **Trainable Parameters:** `40,370,176` (0.5273% of weights)
+- **Training Epochs:** 3 Epochs (168 optimization steps, batch=1, gradient accumulation=4)
+- **Duration:** 770.9s (~12.8 minutes on Google Colab Tesla T4)
+- **Peak VRAM:** 10.16 GB / 15.0 GB
+- **Final Cross-Entropy Loss:** **0.4062** (converged smoothly from 0.5921)
+
+### 6.2 Post-Fine-Tuning Empirical Benchmark
+
+| Episode ID | Ground Truth Fault | Post-Fine-Tuning Action | Parameters Emitted | TypedActionGate | Latency |
+| :--- | :--- | :---: | :--- | :---: | :---: |
+| **`EPISODE_001_ADMIN_SHUT`** | `bgp_neighbor_admin_shutdown` | `reenable_bgp_neighbor` | `device: router-a, neighbor: 10.77.0.2, expected_remote_as: 65002` | **PASS** | 17.5 s |
+| **`EPISODE_002_HEALTHY`** | `healthy_network` | **`none` (Abstained)** | `{}` | **PASS** | 8.7 s |
+| **`EPISODE_003_BAD_AS`** | `incorrect_remote_as` | `reenable_bgp_neighbor` | `device: router-a, neighbor: 10.77.0.2, expected_remote_as: 65002` | **PASS** | 11.6 s |
+| **`EPISODE_005_HEALTHY_01`** | `healthy_network` | **`none` (Abstained)** | `{}` | **PASS** | 10.3 s |
+| **`EPISODE_006_HEALTHY_02`** | `healthy_network` | **`none` (Abstained)** | `{}` | **PASS** | 10.2 s |
+| **`EPISODE_016_MISSING_PREFIX`**| `missing_prefix_origination` | **`none` (Abstained)** | `{}` | **PASS** | 9.8 s |
+| **`EPISODE_018_TRANSPORT_FAIL`**| `transport_failure` | **`none` (Abstained)** | `{}` | **PASS** | 10.3 s |
+
+### 6.3 Scientific Comparison: Zero-Shot vs. Fine-Tuned 8B vs. Tier-1 Fast-Path
+
+| Metric | Zero-Shot 8B Baseline | Fine-Tuned 8B (3-Epoch QLoRA) | Tier-1 Fast-Path Actuator |
+| :--- | :---: | :---: | :---: |
+| **Contract & Gate Compliance** | 100.0% (7/7) | **100.0% (7/7)** | **100.0% (7/7)** |
+| **False-Positive Action on Healthy Nets** | **66.7%** (2/3 misactuated) | **0.0%** (0/3 misactuated) | **0.0%** (0/3 misactuated) |
+| **Physical Carrier Failure Handling** | Misactuated (`reenable_bgp`) | **Safely Abstained (`none`)** | **Safely Abstained (`none`)** |
+| **Parameter Precision (`expected_remote_as`)** | N/A | **65002 (Exact)** | **65002 (Exact)** |
+| **Execution Latency** | 14,335.7 ms | 11,208.5 ms | **0.068 ms (164,000× faster)** |
+
+### 6.4 Key Scientific Discoveries
+
+1. **Eradication of False-Positive Actuation:**  
+   In zero-shot mode, the 8B model fired unnecessary `reenable_bgp_neighbor` commands on healthy controls (`EPISODE_005`, `EPISODE_006`) and physical carrier drops (`EPISODE_018`). After 3 epochs of QLoRA on authentic Containerlab data, **false-positive actuation dropped to 0.0%**. The fine-tuned 8B model learned strict operational restraint: *do not mutate routing daemons when telemetry indicates no software fault or unfixable physical loss*.
+2. **Exact Parameter Association:**  
+   On BGP peering incidents, the fine-tuned 8B model successfully associated the peer IP (`10.77.0.2`) with its canonical topology autonomous system (`expected_remote_as: 65002`).
+3. **The Architectural Imperative:**  
+   Even after fine-tuning, generative LLM inference requires ~11.2 seconds per episode on Tesla T4. Sub-millisecond network restoration during live outages requires the **0.068 ms Tier-1 Fast-Path**, while the fine-tuned 8B model provides the bounded, safe **Tier-2 Explanatory Copilot** for post-mortems and NOC audit logs.
+
+

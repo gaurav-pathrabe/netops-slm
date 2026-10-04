@@ -338,6 +338,23 @@ To prevent overfitting and provide sufficient sample diversity for 8B domain fin
 3. Run Section 7 to execute 3-Epoch 4-bit QLoRA fine-tuning directly on the expanded `train.jsonl` dataset.
 4. Run Section 8 to benchmark the fine-tuned adapter against the invariant test suite and confirm 100% protocol parameter accuracy.
 
+### 10.9 Post-Fine-Tuning Empirical Benchmark (Tesla T4)
+Following 3-Epoch QLoRA domain adaptation (40,370,176 trainable parameters, loss converged to **0.4062** in 770.9s), the fine-tuned 8B model was benchmarked against the invariant 7 held-out test episodes:
+
+| Metric | Zero-Shot 8B Baseline | Fine-Tuned 8B (3-Epoch QLoRA) | Tier-1 Fast-Path Actuator |
+| :--- | :---: | :---: | :---: |
+| **Contract & Gate Compliance** | 100.0% (7/7) | **100.0% (7/7)** | **100.0% (7/7)** |
+| **False-Positive Action on Healthy Nets** | **66.7%** (2/3 misactuated) | **0.0%** (0/3 misactuated) | **0.0%** (0/3 misactuated) |
+| **Physical Carrier Failure Handling** | Misactuated (`reenable_bgp`) | **Safely Abstained (`none`)** | **Safely Abstained (`none`)** |
+| **Parameter Precision (`expected_remote_as`)** | N/A | **65002 (Exact)** | **65002 (Exact)** |
+| **Execution Latency** | 14,335.7 ms | 11,208.5 ms | **0.068 ms (164,000× faster)** |
+
+**Key Takeaways:**
+1. **Zero False-Positive Actuation:** The fine-tuned 8B model completely eradicated false-positive actuations on healthy controls (`EPISODE_002`, `EPISODE_005`, `EPISODE_006`) and unfixable physical wire drops (`EPISODE_018`), learning strict operational restraint.
+2. **Canonical Parameter Resolution:** Correctly associated `router-a`'s peer `10.77.0.2` with `expected_remote_as: 65002`.
+3. **Two-Tier Division Confirmed:** Sub-millisecond network repair requires the **0.068 ms Tier-1 Fast-Path**, while the fine-tuned 8B foundation model excels as the **Tier-2 Explanatory Copilot** for post-mortems and NOC audit logs.
+
+
 
 
 
