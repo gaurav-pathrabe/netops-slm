@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23155789.svg)](https://doi.org/10.5281/zenodo.23155789)
 [![Paper PDF](https://img.shields.io/badge/Paper-PDF-red.svg)](NetOps_SLM_Paper.pdf)
+[![Source LaTeX](https://img.shields.io/badge/Source-LaTeX%20%2F%20Overleaf-blue.svg)](paper/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6%20NF4-EE4C2C.svg)](https://pytorch.org/)
 [![FRRouting](https://img.shields.io/badge/FRRouting-v10.7.1-orange.svg)](https://frrouting.org/)
@@ -10,6 +11,17 @@
 [![Spend](https://img.shields.io/badge/Cloud%20Spend-%240.00%20(Free%20Tier)-success.svg)](https://colab.research.google.com/)
 [![Branch: main (1.5B Edge)](https://img.shields.io/badge/Branch-main_(1.5B_Edge)-blue.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
+
+> [!IMPORTANT]
+> ### 📄 Research Paper Officially Published
+> **Title:** *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*  
+> **Author:** Gaurav Pravin Pathrabe (*Independent Researcher*)  
+> **Permanent DOI:** [10.5281/zenodo.23155789](https://doi.org/10.5281/zenodo.23155789)  
+> **Open Access Repository:** [Zenodo CERN Open Science](https://doi.org/10.5281/zenodo.23155789) | Indexed in **OpenAIRE** (European Commission Open Science Infrastructure)  
+> **Full Text:** [Download Paper PDF (232 KB)](NetOps_SLM_Paper.pdf) | [LaTeX / Overleaf Source Bundle](paper/NetOps_SLM_Overleaf_Package.zip)  
+> 
+> *Key Contribution:* Eliminates the zero-shot "Sysadmin Reflex" (reducing false-positive network actuations from 66.7% to 0.0%) while achieving 0.068 ms deterministic remediation latency via a decoupled Two-Tier Co-Pilot architecture.
+
 
 An open-source, evidence-based network diagnosis and automated remediation system for IP/BGP routing infrastructure. Features an end-to-end **Two-Tier Co-Pilot Architecture**:
 
