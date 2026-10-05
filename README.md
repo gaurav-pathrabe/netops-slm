@@ -1,5 +1,7 @@
 # NetOps-SLM v2: Two-Tier Autonomous Network Remediation, 8B Cloud Benchmark & Domain Fine-Tuning
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23155789.svg)](https://doi.org/10.5281/zenodo.23155789)
+[![Paper PDF](https://img.shields.io/badge/Paper-PDF-red.svg)](NetOps_SLM_Paper.pdf)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6%20NF4-EE4C2C.svg)](https://pytorch.org/)
 [![FRRouting](https://img.shields.io/badge/FRRouting-v10.7.1-orange.svg)](https://frrouting.org/)
@@ -11,7 +13,7 @@
 
 An open-source, evidence-based network diagnosis and automated remediation system for IP/BGP routing infrastructure. Features an end-to-end **Two-Tier Co-Pilot Architecture**:
 
-1. **Tier-1 Fast-Path Actuator:** Sub-millisecond (**0.068 ms**), deterministic remediation executing through a strict, sandboxed [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) with 0% hallucination risk.
+1. **Tier-1 Fast-Path Actuator:** Sub-millisecond (**0.068 ms**), deterministic remediation executing through a strict, sandboxed [`TypedActionGate`](src/verification/typed_action_gate.py) with 0% hallucination risk.
 2. **Tier-2 Explanatory Copilot:** Cloud-adapted 8B Foundation Model (`Qwen2.5-Coder-7B-Instruct`) fine-tuned with 4-bit QLoRA on authentic Containerlab telemetry, generating human-grade Root Cause Analysis (RCA) tickets and post-mortems for Network Operations Centers (NOC).
 
 > [!NOTE]
@@ -315,3 +317,24 @@ NetOps_LLM_and_Jobs/
 3. **The Pretraining "Sysadmin Reflex" in Generative Networking:**
    - *Finding:* General code models bias toward restarting stopped software daemons when observing quiescent or physical transport faults.
    - *Application:* Domain-specific QLoRA fine-tuning on live protocol state machines reduces false-positive network actuations to 0.0%.
+
+---
+
+## 11. Citation
+
+If you use NetOps-SLM, the Containerlab authentic dataset, or the empirical benchmark results in your research, please cite our published preprint:
+
+```bibtex
+@misc{pathrabe2026netopsslm,
+  author       = {Gaurav Pravin Pathrabe},
+  title        = {{NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA}},
+  month        = oct,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23155789},
+  url          = {https://doi.org/10.5281/zenodo.23155789}
+}
+```
+
+**APA Citation:**
+> Pathrabe, G. P. (2026). *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*. Zenodo. https://doi.org/10.5281/zenodo.23155789
