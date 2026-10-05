@@ -1,5 +1,8 @@
 # NetOps-SLM: Edge-Native Autonomous Network Remediation & Verification on FRRouting
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23155789.svg)](https://doi.org/10.5281/zenodo.23155789)
+[![Paper PDF](https://img.shields.io/badge/Paper-PDF-red.svg)](NetOps_SLM_Paper.pdf)
+[![Source LaTeX](https://img.shields.io/badge/Source-LaTeX%20%2F%20Overleaf-blue.svg)](paper/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6%20NF4-EE4C2C.svg)](https://pytorch.org/)
 [![Hardware Profile](https://img.shields.io/badge/Hardware-NVIDIA_RTX_2050_(4GB)_%7C_i5--1240P-green.svg)](#6-hardware--resource-profile)
@@ -8,6 +11,17 @@
 [![Telemetry Provenance](https://img.shields.io/badge/Telemetry-100%25_Authentic_FRR_(Zero_Synthetic)-orange.svg)](#4-authentic-telemetry-dataset)
 [![Branch: v2 Cloud 8B Benchmark](https://img.shields.io/badge/Branch-v2_Cloud_8B_Benchmark-8A2BE2.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
+
+> [!IMPORTANT]
+> ### 📄 Research Paper Officially Published
+> **Title:** *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*  
+> **Author:** Gaurav Pravin Pathrabe (*Independent Researcher*)  
+> **Permanent DOI:** [10.5281/zenodo.23155789](https://doi.org/10.5281/zenodo.23155789)  
+> **Open Access Repository:** [Zenodo CERN Open Science](https://doi.org/10.5281/zenodo.23155789) | Indexed in **OpenAIRE** (European Commission Open Science Infrastructure)  
+> **Full Text:** [Download Paper PDF (232 KB)](NetOps_SLM_Paper.pdf) | [LaTeX / Overleaf Source Bundle](paper/NetOps_SLM_Overleaf_Package.zip)  
+> 
+> *Key Contribution:* Eliminates the zero-shot "Sysadmin Reflex" (reducing false-positive network actuations from 66.7% to 0.0%) while achieving 0.068 ms deterministic remediation latency via a decoupled Two-Tier Co-Pilot architecture.
+
 
 > **Defensible, Empirical Benchmarking of Small Language Models (SLMs) vs. Deterministic Runbooks on Authentic Containerlab FRRouting Telemetry.**
 
@@ -323,7 +337,7 @@ To resolve this limitation, we launched an extensive investigation on our dedica
 5. **Eradication of False-Positive Network Actuations:**  
    In post-fine-tuning evaluation against the invariant test suite, **false-positive actuations dropped from 66.7% to 0.0%**. The fine-tuned 8B model learned strict operational restraint: *do not flap sessions when telemetry shows no software fault or unfixable physical wire drops*.
 6. **The Two-Tier Production Co-Pilot Division:**  
-   - **Tier-1 Fast-Path Actuator:** Runs in **0.068 ms** deterministically through [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) (164,000× faster than generative models), executing sub-millisecond MTTR with 0% hallucination risk.
+   - **Tier-1 Fast-Path Actuator:** Runs in **0.068 ms** deterministically through [`TypedActionGate`](src/verification/typed_action_gate.py) (164,000× faster than generative models), executing sub-millisecond MTTR with 0% hallucination risk.
    - **Tier-2 Explanatory Copilot:** Runs in **~11.2 seconds**, generating human-grade Root Cause Analysis (RCA) post-mortem tickets for NOC incident logs.
 
 ### 10.2 Comparative Matrix: Local 1.5B Edge vs. Cloud 8B Foundation
@@ -339,7 +353,7 @@ To resolve this limitation, we launched an extensive investigation on our dedica
 | **Physical Carrier Loss Handling** | Abstained (`none`) | **Abstained (`none`)** |
 | **Two-Tier Co-Pilot Support** | Single-tier actuator | **Dual-path: 0.068 ms Actuator + 11.2s Explanatory RCA** |
 | **Interactive Cloud Notebook** | N/A (Local WSL2 only) | **[notebooks/NetOps_8B_Cloud_Benchmark.ipynb](https://github.com/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/notebooks/NetOps_8B_Cloud_Benchmark.ipynb)** |
-| **Empirical Scientific Report** | [reports/benchmark_held_out.md](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/benchmark_held_out.md) | **[reports/colab_8b_empirical_results.md](https://github.com/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/reports/colab_8b_empirical_results.md)** |
+| **Empirical Scientific Report** | [reports/benchmark_held_out.md](reports/benchmark_held_out.md) | **[reports/colab_8b_empirical_results.md](https://github.com/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/reports/colab_8b_empirical_results.md)** |
 
 ### 10.3 How to Explore the v2 Branch:
 
@@ -357,4 +371,26 @@ cat src/co_pilot/two_tier_copilot.py
 
 Or open the interactive notebook directly in Google Colab:  
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gaurav-pathrabe/netops-slm/blob/feature/netops-v2-cloud-8b-benchmark/notebooks/NetOps_8B_Cloud_Benchmark.ipynb)
+
+---
+
+## 11. Citation
+
+If you use NetOps-SLM, the Containerlab authentic dataset, or the empirical benchmark results in your research, please cite our published preprint:
+
+```bibtex
+@misc{pathrabe2026netopsslm,
+  author       = {Gaurav Pravin Pathrabe},
+  title        = {{NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA}},
+  month        = oct,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23155789},
+  url          = {https://doi.org/10.5281/zenodo.23155789}
+}
+```
+
+**APA Citation:**
+> Pathrabe, G. P. (2026). *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*. Zenodo. https://doi.org/10.5281/zenodo.23155789
+
 
