@@ -1,0 +1,78 @@
+# NetOps-SLM Phase 2: 4-Node Spine-Leaf CLOS Fabric with ECMP Multipath
+name: netops-spine-leaf-lab
+
+topology:
+  nodes:
+    # Spine 1 (ASN 65100)
+    spine-1:
+      kind: linux
+      image: quay.io/frrouting/frr:containerlab-10.7.1
+      binds:
+        - config/spine-1/daemons:/etc/frr/daemons
+        - config/spine-1/frr.conf:/etc/frr/frr.conf
+        - config/spine-1/vtysh.conf:/etc/frr/vtysh.conf
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+
+    # Spine 2 (ASN 65100)
+    spine-2:
+      kind: linux
+      image: quay.io/frrouting/frr:containerlab-10.7.1
+      binds:
+        - config/spine-2/daemons:/etc/frr/daemons
+        - config/spine-2/frr.conf:/etc/frr/frr.conf
+        - config/spine-2/vtysh.conf:/etc/frr/vtysh.conf
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+
+    # Leaf 1 (ASN 65001)
+    leaf-1:
+      kind: linux
+      image: quay.io/frrouting/frr:containerlab-10.7.1
+      binds:
+        - config/leaf-1/daemons:/etc/frr/daemons
+        - config/leaf-1/frr.conf:/etc/frr/frr.conf
+        - config/leaf-1/vtysh.conf:/etc/frr/vtysh.conf
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+
+    # Leaf 2 (ASN 65002)
+    leaf-2:
+      kind: linux
+      image: quay.io/frrouting/frr:containerlab-10.7.1
+      binds:
+        - config/leaf-2/daemons:/etc/frr/daemons
+        - config/leaf-2/frr.conf:/etc/frr/frr.conf
+        - config/leaf-2/vtysh.conf:/etc/frr/vtysh.conf
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+
+    # Endpoint Host 1
+    client-1:
+      kind: linux
+      image: wbitt/network-multitool:3.22.2
+      exec:
+        - ip addr add 10.77.1.10/24 dev eth1
+        - ip route replace 10.77.2.0/24 via 10.77.1.1
+
+    # Endpoint Host 2
+    client-2:
+      kind: linux
+      image: wbitt/network-multitool:3.22.2
+      exec:
+        - ip addr add 10.77.2.10/24 dev eth1
+        - ip route replace 10.77.1.0/24 via 10.77.2.1
+
+  links:
+    - endpoints: ["leaf-1:eth1", "spine-1:eth1"]
+      mtu: 1400
+    - endpoints: ["leaf-1:eth2", "spine-2:eth1"]
+      mtu: 1400
+    - endpoints: ["leaf-2:eth1", "spine-1:eth2"]
+      mtu: 1400
+    - endpoints: ["leaf-2:eth2", "spine-2:eth2"]
+      mtu: 1400
+    - endpoints: ["client-1:eth1", "leaf-1:eth3"]
+      mtu: 1400
+    - endpoints: ["client-2:eth1", "leaf-2:eth3"]
+      mtu: 1400
