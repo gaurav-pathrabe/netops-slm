@@ -1,0 +1,8 @@
+{
+  "fault_type": "CLOS_ASYMMETRIC_MTU_MISMATCH",
+  "optimal_action": "drain_spine_traffic",
+  "affected_nodes": [
+    "spine-1"
+  ],
+  "diagnosis": "spine_asymmetric_mtu_mismatch"
+}

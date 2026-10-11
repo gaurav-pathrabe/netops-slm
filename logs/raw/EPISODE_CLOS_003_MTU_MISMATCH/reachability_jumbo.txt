@@ -1,0 +1,4 @@
+PING 10.77.2.10 (10.77.2.10) 1300(1328) bytes of data.
+
+--- 10.77.2.10 ping statistics ---
+5 packets transmitted, 0 received, 100% packet loss, time 4084ms
