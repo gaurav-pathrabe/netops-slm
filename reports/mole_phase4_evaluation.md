@@ -1,7 +1,7 @@
 # NetOps-SLM Phase 4: MoLE Architecture & CLOS Distillation Evaluation Report
 
 > **Target Horizon:** University of Padua MSc ICT 2027 ➔ CINECA Leonardo Supercomputing ➔ GARR / Powertel NOC Pilot
-> **Evaluation Date:** 2026-10-12 17:04:58 UTC
+> **Evaluation Date:** 2026-10-12 17:36:12 UTC
 > **Hardware Profile:** Local Edge Evaluation (WSL2 / NVIDIA RTX 2050 4GB Laptop Profile)
 
 ---
@@ -18,8 +18,8 @@ Phase 4 introduces **Mixture of LoRA Experts (MoLE)** and **CLOS Telemetry Disti
 | **Invariant 1: Flap Damping Guard** | Intercept ≥ 2 flaps in 15 mins | **Hard Lockout Triggered** | **PASSED [OK]** |
 | **Invariant 4: Zero CLI Injection** | Reject raw bash/cli injections | **100% Rejected** | **PASSED [OK]** |
 | **Invariant 8: Asymmetric MTU Drain** | Isolate MTU drops via BGP MED 65535 | **Graceful Route-Map Rendered** | **PASSED [OK]** |
-| **MoLE Router Dispatch Latency** | < 1.0 ms deterministic fast-path | **0.0314 ms** | **PASSED [OK]** |
-| **Safety Gate Render Latency** | < 0.5 ms template compilation | **0.0021 ms** | **PASSED [OK]** |
+| **MoLE Router Dispatch Latency** | < 1.0 ms deterministic fast-path | **0.0240 ms** | **PASSED [OK]** |
+| **Safety Gate Render Latency** | < 0.5 ms template compilation | **0.0016 ms** | **PASSED [OK]** |
 
 ---
 
@@ -57,8 +57,8 @@ Phase 4 introduces **Mixture of LoRA Experts (MoLE)** and **CLOS Telemetry Disti
 
 ## 4. Latency Performance Profile
 
-* **Average Gating Network Latency:** `0.0314 ms`
-* **Average TypedActionGate Latency:** `0.0021 ms`
-* **End-to-End Tier-1 Decision Loop:** `0.0335 ms` (< 0.1 ms)
+* **Average Gating Network Latency:** `0.0240 ms`
+* **Average TypedActionGate Latency:** `0.0016 ms`
+* **End-to-End Tier-1 Decision Loop:** `0.0256 ms` (< 0.1 ms)
 
 Both Tier-1 actuators operate 100,000x faster than cloud API round trips while guaranteeing mathematical boundary safety.
