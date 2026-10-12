@@ -8,6 +8,7 @@
 [![Telemetry Provenance](https://img.shields.io/badge/Telemetry-100%25_Authentic_FRR_(Zero_Synthetic)-orange.svg)](#4-authentic-telemetry-dataset)
 [![Branch: v3 Spine-Leaf CLOS ECMP](https://img.shields.io/badge/Branch-v3_Spine--Leaf_CLOS_ECMP-blueviolet.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
 [![Branch: v2 Cloud 8B Benchmark](https://img.shields.io/badge/Branch-v2_Cloud_8B_Benchmark-8A2BE2.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
+[![Branch: main (v1 Edge 1.5B)](https://img.shields.io/badge/Branch-main_(v1_Edge_1.5B)-blue.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
 
 > **Defensible, Empirical Benchmarking of Small Language Models (SLMs) vs. Deterministic Runbooks on Authentic Containerlab FRRouting Telemetry.**
@@ -40,6 +41,9 @@ An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/
 - [9. Academic Alignment & Citations](#9-academic-alignment--citations)
 - [10. 🚀 Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
 - [11. 🌐 NetOps-SLM v3: 4-Node Spine-Leaf CLOS Fabric & ECMP Resilience](#11--netops-slm-v3-4-node-spine-leaf-clos-fabric--ecmp-resilience)
+- [12. 🧠 Phase 4: CLOS Dataset Distillation & Mixture of LoRA Experts (MoLE)](#12-phase-4-clos-dataset-distillation--mixture-of-lora-experts-mole)
+- [13. 🛡️ Phase 5: Batfish Digital Twin Verification Engine & Web NOC Dashboard](#13-phase-5-batfish-digital-twin-verification-engine--web-noc-dashboard)
+- [14. 🧭 Complete Cross-Version Evolution Matrix (v1 vs. v2 vs. v3)](#14-complete-cross-version-evolution-matrix-v1-vs-v2-vs-v3)
 
 ---
 
@@ -540,12 +544,21 @@ Evaluated end-to-end on local host hardware using [`src/evaluation/evaluate_mole
 
 Audit report preserved in: [`reports/mole_phase4_evaluation.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/mole_phase4_evaluation.md).
 
-### 12.4 How to Train the MoLE Experts & Reproduce Phase 4
+### 12.4 Training Execution & Adapter Preservation
 
-#### 1-Click Free Cloud Training (Google Colab / Tesla T4 – $0 Spend):
-Open and run [`notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb) in Google Colab:
-- Trains `expert_bgp_protocol`, `expert_clos_fabric`, and `expert_template_gate` sequentially in ~12 minutes using 4-bit NF4 QLoRA.
-- Automatically generates and downloads `mole_trained_adapters.zip` to unpack into [`models/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/).
+#### GPU Training Convergence (Executed on Google Colab Tesla T4 – $0 Spend):
+The 3 MoLE experts were trained sequentially using [`notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb) in **144.0 seconds total (~2.4 minutes)**:
+* **`expert_bgp_protocol`:** 73 authentic single-router BGP episodes | Duration: **117.07s** | Loss: **2.176 ➔ 0.775** | Peak VRAM: ~2.2 GB
+* **`expert_clos_fabric`:** 5 authentic 4-switch CLOS episodes | Duration: **17.51s** | Loss: **1.923** | Peak VRAM: ~2.2 GB
+* **`expert_template_gate`:** Schema and Jinja2 validation fixtures | Duration: **9.42s** | Loss: **3.514** | Peak VRAM: ~2.2 GB
+
+All 21 adapter files (`adapter_model.safetensors`, configurations, and tokenizers) are permanently checked into the repository under [`models/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/):
+* [`models/mole-expert_bgp_protocol/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/mole-expert_bgp_protocol/)
+* [`models/mole-expert_clos_fabric/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/mole-expert_clos_fabric/)
+* [`models/mole-expert_template_gate/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/mole-expert_template_gate/)
+
+#### 1-Click Free Cloud Reproduction:
+Open and run [`notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb) in Google Colab (with embedded offline data payload) to retrain or export the adapters at any time with zero dependency on external git authentication.
 
 #### Local Verification & Dry-Run Pipeline:
 ```bash
@@ -627,5 +640,30 @@ python dashboard/server.py
 # 2. Open in your browser:
 # http://localhost:8888/
 ```
+
+---
+
+## 14. 🧭 Complete Cross-Version Evolution Matrix (v1 vs. v2 vs. v3)
+
+NetOps-SLM has progressed across three defensible, empirical research generations:
+
+| Dimension | v1: Edge SLM Baseline (`main`) | v2: Cloud 8B Co-Pilot (`feature/netops-v2...`) | v3: Spine-Leaf CLOS MoLE (`feature/netops-v3...`) |
+| :--- | :--- | :--- | :--- |
+| **Network Topology** | 2-Node point-to-point FRR link (`router-a`, `router-b`) | 2-Node point-to-point FRR link (`router-a`, `router-b`) | **4-Switch Spine-Leaf CLOS Fabric** (RFC 7938) + 2 clients |
+| **Multipath & ECMP** | Single path transit | Single path transit | **eBGP Multipath (`maximum-paths 64`)** across dual spines |
+| **Dynamic Failover** | Daemon restart required | Daemon restart required | **Sub-millisecond Linux kernel FIB failover (0% packet loss)** |
+| **Authentic Dataset** | 23 single-router BGP episodes | 73 single-router BGP episodes | **78 total episodes** (73 BGP + 5 multi-switch CLOS incidents) |
+| **AI Model Architecture** | Monolithic `Qwen2.5-Coder-1.5B` | Monolithic `Qwen2.5-Coder-7B` (8B cloud) | **Mixture of LoRA Experts (MoLE)**: 3 specialized adapters |
+| **Telemetry Distillation** | Raw JSON (~3,850 tokens) | `compact_snapshot()` (~380 tokens) | **`clos_telemetry_distiller` (~479 tokens, 96.0% compaction)** |
+| **Pre-Flight Verification** | Post-action assertion checks | Post-action assertion checks | **Batfish-Style In-Memory Digital Twin (0.1545 ms reachability proof)** |
+| **Safety & Gating** | Basic `TypedActionGate` | `TypedActionGate` (Anti-Sysadmin reflex) | **Extended `TypedActionGate`**: Flap Damping Guard + MED 65535 drain |
+| **Operator Interface** | CLI execution scripts | Two-tier Co-Pilot RCA scripts | **Full Real-Time Web NOC Dashboard (`http://localhost:8888`)** |
+| **Hardware Profile** | RTX 2050 4GB Laptop ($0 spend) | Google Colab Tesla T4 ($0 spend) | **Edge Laptop (< 250 MB RAM WSL2) + Colab T4 (144s train, $0 spend)** |
+
+### Cross-Branch Navigation Links:
+* **v1 Edge Baseline (1.5B):** [`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
+* **v2 Cloud 8B Benchmark:** [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
+* **v3 CLOS Fabric & MoLE:** [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
+
 
 
