@@ -9,6 +9,7 @@
 [![Zero-Cloud Cost](https://img.shields.io/badge/Spend-$0.00_Local_WSL2-blue.svg)](#6-hardware--resource-profile)
 [![Safety Boundary](https://img.shields.io/badge/Safety_Gate-100%25_Intercepted_(0_Breaches)-brightgreen.svg)](#3-outer-loop-safety-architecture)
 [![Telemetry Provenance](https://img.shields.io/badge/Telemetry-100%25_Authentic_FRR_(Zero_Synthetic)-orange.svg)](#4-authentic-telemetry-dataset)
+[![Branch: v3 Spine-Leaf CLOS ECMP](https://img.shields.io/badge/Branch-v3_Spine--Leaf_CLOS_ECMP-blueviolet.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
 [![Branch: v2 Cloud 8B Benchmark](https://img.shields.io/badge/Branch-v2_Cloud_8B_Benchmark-8A2BE2.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
 
@@ -28,19 +29,27 @@
 An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/BGP routing faults directly on consumer laptop hardware (NVIDIA GeForce RTX 2050 4GB). Investigates whether a 4-bit quantized Small Language Model (`Qwen2.5-Coder-1.5B`) fine-tuned on real routing telemetry can safely self-heal network outages—or whether a deterministic, rule-based runbook remains the optimal production engine.
 
 > [!IMPORTANT]
-> ### 🚀 NetOps-SLM v2 is Live: 8B Cloud Scaling & Two-Tier Co-Pilot Architecture
-> While this `main` branch documents our initial **1.5B edge SLM deployment on consumer hardware (RTX 2050 4GB)**, we scaled this research into an **8B Foundation Model & Two-Tier Co-Pilot** on our dedicated feature branch:
+> ### 🌐 NetOps-SLM v3 is Live: 4-Node Spine-Leaf CLOS Fabric, MoLE Multi-Expert & Digital Twin
+> Our newest generation scales beyond point-to-point router links into a **4-Node Spine-Leaf CLOS Data Center Fabric (RFC 7938)** with **Equal-Cost Multi-Path (ECMP)**:
+> 
+> **👉 Explore the Branch:** [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
+> 
+> * **4-Switch CLOS Topology:** `spine-1`, `spine-2`, `leaf-1`, `leaf-2` emulated via Containerlab FRR 10.7.1 + 2 client endpoints (`client-1`, `client-2`).
+> * **eBGP Multipath (ECMP):** Dynamic sub-millisecond Linux kernel FIB failover with 0% packet loss.
+> * **Mixture of LoRA Experts (MoLE):** 3 specialized adapters (`expert_bgp_protocol`, `expert_clos_fabric`, `expert_template_gate`) with 100% deterministic dispatch precision.
+> * **Batfish-Style Pre-Flight Digital Twin Verifier:** In-memory graph simulation mathematically proving reachability in 0.1545 ms before live execution.
+> * **Real-Time Web NOC Dashboard:** Dark-mode cybernetic dashboard with live SVG topology, incident replay, and 1-Click Human Approval mode.
+
+> [!NOTE]
+> ### 🚀 NetOps-SLM v2: 8B Cloud Scaling & Two-Tier Co-Pilot Architecture
+> Scaled the research to an **8B Foundation Model & Two-Tier Co-Pilot** on Google Colab:
 > 
 > **👉 Explore the Branch:** [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
 > 
 > * **8B Cloud Foundation Benchmark:** Live evaluation of `Qwen2.5-Coder-7B-Instruct` on NVIDIA Tesla T4 ($0.00 spend).
 > * **Two-Tier Production Co-Pilot:** 0.068 ms Deterministic Fast-Path Actuator + 11.2s Explanatory RCA Copilot.
 > * **The "Sysadmin Reflex" Discovery:** Forensic analysis of why zero-shot models mistake BGP Idle states for stopped daemons.
-> * **50-Episode Telemetry Expansion:** Dataset expanded to 73 authentic Containerlab FRR incidents.
 > * **4-Bit QLoRA Fine-Tuning:** 3-Epoch domain adaptation on Tesla T4, reducing false-positive network actuations from 66.7% to **0.0%**.
-> * **Interactive Colab Notebook:** Run the complete benchmark and training pipeline in Google Colab with 1 click.
-> 
-> *See [Section 10](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch) below for the full comparative analysis.*
 
 ---
 
@@ -54,7 +63,9 @@ An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/
 - [7. Failure Taxonomy & Boundary Enforcement](#7-failure-taxonomy--boundary-enforcement)
 - [8. Repository Topology](#8-repository-topology)
 - [9. Academic Alignment & Citations](#9-academic-alignment--citations)
-- [10. 🚀 The Next Frontier: Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
+- [10. 🚀 Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
+- [11. 🧭 Cross-Version Evolution Roadmap (v1 vs. v2 vs. v3)](#11-cross-version-evolution-roadmap-v1-vs-v2-vs-v3)
+- [12. 📄 Citation & Research Paper](#12-citation--research-paper)
 
 ---
 
@@ -374,7 +385,31 @@ Or open the interactive notebook directly in Google Colab:
 
 ---
 
-## 11. Citation
+## 11. 🧭 Cross-Version Evolution Roadmap (v1 vs. v2 vs. v3)
+
+NetOps-SLM has progressed across three defensible, empirical research generations:
+
+| Dimension | v1: Edge SLM Baseline (`main`) | v2: Cloud 8B Co-Pilot (`feature/netops-v2...`) | v3: Spine-Leaf CLOS MoLE (`feature/netops-v3...`) |
+| :--- | :--- | :--- | :--- |
+| **Network Topology** | 2-Node point-to-point FRR link (`router-a`, `router-b`) | 2-Node point-to-point FRR link (`router-a`, `router-b`) | **4-Switch Spine-Leaf CLOS Fabric** (RFC 7938) + 2 clients |
+| **Multipath & ECMP** | Single path transit | Single path transit | **eBGP Multipath (`maximum-paths 64`)** across dual spines |
+| **Dynamic Failover** | Daemon restart required | Daemon restart required | **Sub-millisecond Linux kernel FIB failover (0% packet loss)** |
+| **Authentic Dataset** | 23 single-router BGP episodes | 73 single-router BGP episodes | **78 total episodes** (73 BGP + 5 multi-switch CLOS incidents) |
+| **AI Model Architecture** | Monolithic `Qwen2.5-Coder-1.5B` | Monolithic `Qwen2.5-Coder-7B` (8B cloud) | **Mixture of LoRA Experts (MoLE)**: 3 specialized adapters |
+| **Telemetry Distillation** | Raw JSON (~3,850 tokens) | `compact_snapshot()` (~380 tokens) | **`clos_telemetry_distiller` (~479 tokens, 96.0% compaction)** |
+| **Pre-Flight Verification** | Post-action assertion checks | Post-action assertion checks | **Batfish-Style In-Memory Digital Twin (0.1545 ms reachability proof)** |
+| **Safety & Gating** | Basic `TypedActionGate` | `TypedActionGate` (Anti-Sysadmin reflex) | **Extended `TypedActionGate`**: Flap Damping Guard + MED 65535 drain |
+| **Operator Interface** | CLI execution scripts | Two-tier Co-Pilot RCA scripts | **Full Real-Time Web NOC Dashboard (`http://localhost:8888`)** |
+| **Hardware Profile** | RTX 2050 4GB Laptop ($0 spend) | Google Colab Tesla T4 ($0 spend) | **Edge Laptop (< 250 MB RAM WSL2) + Colab T4 (144s train, $0 spend)** |
+
+### Cross-Branch Navigation Links:
+* **v1 Edge Baseline (1.5B):** [`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
+* **v2 Cloud 8B Benchmark:** [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
+* **v3 CLOS Fabric & MoLE:** [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
+
+---
+
+## 12. 📄 Citation & Research Paper
 
 If you use NetOps-SLM, the Containerlab authentic dataset, or the empirical benchmark results in your research, please cite our published preprint:
 
@@ -392,5 +427,6 @@ If you use NetOps-SLM, the Containerlab authentic dataset, or the empirical benc
 
 **APA Citation:**
 > Pathrabe, G. P. (2026). *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*. Zenodo. https://doi.org/10.5281/zenodo.23155789
+
 
 
