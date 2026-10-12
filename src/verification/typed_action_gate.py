@@ -6,10 +6,18 @@ Fulfills Invariants 1, 4, 7 and outer-loop security constraints.
 Supports both Legacy 2-Node lab and Phase 2/3 4-Node Spine-Leaf CLOS Fabric.
 """
 
+import os
+import sys
 import json
 import time
 from typing import Dict, Any, Tuple, List, Optional
 from datetime import datetime, timezone
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from src.verification.digital_twin_verifier import DigitalTwinVerifier, PreFlightVerificationProof
 
 # Legacy 2-Node Lab Inventory
 LEGACY_INVENTORY = {
@@ -70,9 +78,26 @@ REQUIRED_SCHEMA_KEYS = [
 
 
 class TypedActionGate:
-    def __init__(self, inventory: Dict[str, Any] = CLOS_INVENTORY):
+    def __init__(self, inventory: Dict[str, Any] = CLOS_INVENTORY, enable_digital_twin: bool = True):
         self.inventory = inventory
         self.flap_history: Dict[str, List[float]] = {}  # Invariant 1 Flap tracker: {target: [timestamps]}
+        self.enable_digital_twin = enable_digital_twin
+        self.digital_twin = DigitalTwinVerifier() if enable_digital_twin else None
+
+    def verify_preflight(
+        self,
+        incident_id: str,
+        payload: Dict[str, Any],
+        initial_telemetry: Optional[Dict[str, Any]] = None
+    ) -> Optional[PreFlightVerificationProof]:
+        """Runs pre-flight digital twin simulation to prove reachability and loop-freedom before execution."""
+        if not self.digital_twin:
+            return None
+        return self.digital_twin.verify_remediation_preflight(
+            incident_id=incident_id,
+            action_payload=payload,
+            initial_telemetry=initial_telemetry
+        )
 
     def record_flap_event(self, target: str, timestamp: Optional[float] = None) -> int:
         """Registers a flap event and prunes events older than 15 minutes (900 seconds)."""
@@ -142,10 +167,17 @@ class TypedActionGate:
 
         return len(errors) == 0, errors
 
-    def render_trusted_template(self, payload: Dict[str, Any]) -> Tuple[bool, List[str], str]:
+    def render_trusted_template(
+        self,
+        payload: Dict[str, Any],
+        enforce_preflight: bool = False,
+        incident_id: str = "INCIDENT_PREFLIGHT",
+        initial_telemetry: Optional[Dict[str, Any]] = None
+    ) -> Tuple[bool, List[str], str]:
         """
         Renders safe, deterministic vtysh commands from validated typed action.
         Model text is never executed directly (Invariant 4).
+        If enforce_preflight is True, formally proves reachability and loop-freedom on the digital twin.
         """
         is_valid, errors = self.validate_action_payload(payload)
         if not is_valid:
@@ -153,6 +185,12 @@ class TypedActionGate:
 
         if payload.get("abstain") is True or payload.get("action") == "none":
             return True, [], "# Action abstained. No network commands executed."
+
+        # Pre-Flight Formal Verification Gate
+        if enforce_preflight and self.digital_twin:
+            proof = self.verify_preflight(incident_id, payload, initial_telemetry)
+            if proof and not proof.preflight_passed:
+                return False, [f"Digital Twin Pre-Flight Rejection: {c}" for c in proof.counterexamples], ""
 
         action = payload.get("action")
         params = payload.get("parameters", {})

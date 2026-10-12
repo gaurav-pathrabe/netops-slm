@@ -559,4 +559,67 @@ python src/training/train_mole.py
 python src/evaluation/evaluate_mole.py
 ```
 
+---
+
+## 13. Phase 5: Batfish Digital Twin Verification Engine & Web NOC Dashboard
+
+Phase 5 equips NetOps-SLM with formal mathematical safety guarantees and an enterprise operator interface for the Network Operations Center (NOC).
+
+### 13.1 Pre-Flight In-Memory Digital Twin Verification Engine
+
+Before any synthesized action is dispatched to live network hardware or Containerlab switches, the [`digital_twin_verifier.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/digital_twin_verifier.py) engine executes a pre-flight mathematical simulation on an in-memory clone of the network graph:
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                   PRE-FLIGHT DIGITAL TWIN FORMAL VERIFICATION LOOP                     │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   [ Incident Detected ] ➔ [ MoLE Expert Dispatch ] ➔ [ TypedActionGate Synthesis ]     │
+│                                                                │                       │
+│                                                                ▼                       │
+│                                               ┌─────────────────────────────────┐      │
+│                                               │  Batfish Digital Twin Simulator │      │
+│                                               │  (Pre-Flight In-Memory Proof)   │      │
+│                                               └────────────────┬────────────────┘      │
+│                                                                │                       │
+│                                       ┌────────────────────────┴──────────────┐        │
+│                                       ▼                                       ▼        │
+│                              [ Reachability Proved ]                [ Blackhole / Loop ]│
+│                                       │                                       │        │
+│                                       ▼                                       ▼        │
+│                         ┌───────────────────────────┐                 [ HARD ABORT ]   │
+│                         │   Web NOC Dashboard       │                 (Safety Lockout) │
+│                         │  • Live CLOS Topology     │                                  │
+│                         │  • 1-Click Human Approval │                                  │
+│                         │  • Real-Time Canary Matrix│                                  │
+│                         └───────────────────────────┘                                  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+1. **Assertion 1 (End-to-End Reachability):** Proves that forwarding paths between `client-1` and `client-2` remain intact prior to actuating link/session changes.
+2. **Assertion 2 (Loop Freedom):** Proves acyclic forwarding (detects cycles before routing converges).
+3. **Assertion 3 (Blackhole Freedom):** Ensures zero traffic routes to down interfaces or stripped prefixes.
+4. **Assertion 4 (Capacity-Aware Redundancy - Invariant 7):** Proves alternate ECMP transit paths have sufficient capacity to absorb rerouted flows without buffer drops.
+5. **Assertion 5 (Cryptographic Flight Recording - Invariant 11):** Signs every pre-flight verification verdict with a SHA-256 hash ledger for legal compliance.
+
+### 13.2 Web NOC Dashboard Architecture
+
+The dark-mode Web NOC Dashboard is served by [`dashboard/server.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/dashboard/server.py) and rendered via [`dashboard/public/index.html`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/dashboard/public/index.html):
+
+- **4-Node Spine-Leaf CLOS Topology Canvas:** Interactive SVG topology reflecting real-time link states, BGP peer counts, and ECMP forwarding paths across `spine-1`, `spine-2`, `leaf-1`, `leaf-2`, `client-1`, and `client-2`.
+- **Authentic Incident Replay Studio:** Interactive selector for all 78 Containerlab episodes (`EPISODE_CLOS_001` through `005` + BGP episodes).
+- **MoLE Dispatch Gating Radar:** Visualizes real-time router weight allocation across `expert_clos_fabric`, `expert_bgp_protocol`, and `expert_template_gate` with latency benchmarks.
+- **1-Click Human Approval Mode (Invariant 3 & 5 Shield):** Allows operators to alternate between Shadow Mode (read-only audit logging) and 1-Click Approved live commit.
+- **11 Production Invariants HUD:** Visual status matrix validating Flap Damping Guard (Invariant 1), Zero CLI Injection (Invariant 4), Active Canary MTU Probing (Invariant 8), and Cryptographic Ledger (Invariant 11).
+
+### 13.3 How to Launch the Web NOC Dashboard
+
+```bash
+# 1. Run the dashboard backend server
+python dashboard/server.py
+
+# 2. Open in your browser:
+# http://localhost:8888/
+```
+
 
