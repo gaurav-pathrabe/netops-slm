@@ -1,0 +1,8 @@
+{
+  "fault_type": "CLOS_ECMP_ROUTE_BLACKHOLE",
+  "optimal_action": "isolate_degraded_path",
+  "affected_nodes": [
+    "spine-1"
+  ],
+  "diagnosis": "ecmp_route_blackhole_on_spine"
+}

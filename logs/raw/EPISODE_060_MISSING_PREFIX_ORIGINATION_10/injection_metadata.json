@@ -1,0 +1,10 @@
+{
+  "episode_id": "EPISODE_060_MISSING_PREFIX_ORIGINATION_10",
+  "incident_family": "missing_prefix_origination",
+  "target_container": "clab-netops-bgp-lab-router-a",
+  "target_device": "router-a",
+  "peer_ip": "10.77.0.2",
+  "injection_timestamp": "2026-10-04T16:58:49.791516+00:00",
+  "captured_at": "2026-10-04T16:59:02.026982+00:00",
+  "ground_truth_fault": "missing_prefix_origination"
+}

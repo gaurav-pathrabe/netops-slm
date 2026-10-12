@@ -1,0 +1,10 @@
+PING 10.77.2.10 (10.77.2.10) 1300(1328) bytes of data.
+1308 bytes from 10.77.2.10: icmp_seq=1 ttl=61 time=0.092 ms
+1308 bytes from 10.77.2.10: icmp_seq=2 ttl=61 time=0.094 ms
+1308 bytes from 10.77.2.10: icmp_seq=3 ttl=61 time=0.135 ms
+1308 bytes from 10.77.2.10: icmp_seq=4 ttl=61 time=0.181 ms
+1308 bytes from 10.77.2.10: icmp_seq=5 ttl=61 time=0.168 ms
+
+--- 10.77.2.10 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4076ms
+rtt min/avg/max/mdev = 0.092/0.134/0.181/0.036 ms

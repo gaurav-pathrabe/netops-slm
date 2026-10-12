@@ -1,0 +1,10 @@
+{
+  "episode_id": "EPISODE_033_HEALTHY_NETWORK_03",
+  "incident_family": "healthy_network",
+  "target_container": "clab-netops-bgp-lab-router-a",
+  "target_device": "router-a",
+  "peer_ip": "10.77.0.2",
+  "injection_timestamp": "2026-10-04T16:49:30.790162+00:00",
+  "captured_at": "2026-10-04T16:49:41.658796+00:00",
+  "ground_truth_fault": "healthy_network"
+}

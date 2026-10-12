@@ -1,0 +1,9 @@
+{
+  "fault_type": "CLOS_OPTICAL_FLAP",
+  "optimal_action": "none",
+  "affected_nodes": [
+    "leaf-1",
+    "spine-1"
+  ],
+  "diagnosis": "bgp_optical_flapping_lockout"
+}

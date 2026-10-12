@@ -1,0 +1,46 @@
+{
+  "ipv4Unicast": {
+    "routerId": "10.77.0.1",
+    "as": 65001,
+    "vrfId": 0,
+    "vrfName": "default",
+    "tableVersion": 22,
+    "ribCount": 2,
+    "ribMemory": 320,
+    "peerCount": 1,
+    "peerMemory": 23528,
+    "peers": {
+      "10.77.0.2": {
+        "hostname": "router-b",
+        "domainname": "localdomain",
+        "softwareVersion": "n/a",
+        "remoteAs": 65002,
+        "localAs": 65001,
+        "version": 4,
+        "msgRcvd": 57,
+        "msgSent": 68,
+        "tableVersion": 22,
+        "outq": 0,
+        "inq": 0,
+        "peerUptime": "00:02:10",
+        "peerUptimeMsec": 130000,
+        "peerUptimeEstablishedEpoch": 1791132524,
+        "pfxRcd": 1,
+        "pfxSnt": 2,
+        "state": "Established",
+        "peerState": "OK",
+        "connectionsEstablished": 11,
+        "connectionsDropped": 10,
+        "desc": "PEER_ROUTER_B",
+        "idType": "ipv4"
+      }
+    },
+    "failedPeers": 0,
+    "displayedPeers": 1,
+    "totalPeers": 1,
+    "dynamicPeers": 0,
+    "bestPath": {
+      "multiPathRelax": "false"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "fault_type": "CLOS_HEALTHY_CONTROL",
+  "optimal_action": "none",
+  "affected_nodes": [],
+  "diagnosis": "healthy_converged_fabric"
+}

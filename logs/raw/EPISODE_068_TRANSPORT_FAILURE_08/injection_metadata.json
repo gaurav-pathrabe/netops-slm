@@ -1,0 +1,10 @@
+{
+  "episode_id": "EPISODE_068_TRANSPORT_FAILURE_08",
+  "incident_family": "transport_failure",
+  "target_container": "clab-netops-bgp-lab-router-a",
+  "target_device": "router-a",
+  "peer_ip": "10.77.0.2",
+  "injection_timestamp": "2026-10-04T17:01:39.217369+00:00",
+  "captured_at": "2026-10-04T17:01:51.633639+00:00",
+  "ground_truth_fault": "transport_failure"
+}

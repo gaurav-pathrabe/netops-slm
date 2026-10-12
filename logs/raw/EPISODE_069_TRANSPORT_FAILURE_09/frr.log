@@ -1,0 +1,31 @@
+2026/10/04 16:44:43 WATCHFRR: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/10/04 16:44:43 WATCHFRR: [T83RR-8SM5G] watchfrr 10.7.1_git starting: vty@0
+2026/10/04 16:44:43 WATCHFRR: [ZCJ3S-SPH5S] mgmtd state -> down : initial connection attempt failed
+2026/10/04 16:44:43 WATCHFRR: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed
+2026/10/04 16:44:43 WATCHFRR: [ZCJ3S-SPH5S] bgpd state -> down : initial connection attempt failed
+2026/10/04 16:44:43 WATCHFRR: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed
+2026/10/04 16:44:43 WATCHFRR: [YFT0P-5Q5YX] Forked background command [pid 24]: /usr/lib/frr/watchfrr.sh restart all
+2026/10/04 16:44:43 MGMTD: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/10/04 16:44:43 ZEBRA: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/10/04 16:44:43 ZEBRA: [SAPXX-HP5B5][EC 4043309108] Extended Error: failed to retrieve link settings
+2026/10/04 16:44:43 ZEBRA: [WVJCK-PPMGD][EC 4043309093] generic-netlink-cmd (NS 0) error: Not supported, type=RTM_DELADDR(21), seq=3, pid=34
+2026/10/04 16:44:43 ZEBRA: [QBKSZ-0KHCW][EC 4043309138] Disabling MPLS support (no kernel support)
+2026/10/04 16:44:43 BGP: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+2026/10/04 16:44:44 STATIC: [NFX3B-68SEX] FD Limit set: 1048576 is too large.  Is this intentional?  Consider using --limit-fds. Limiting size to 100000
+[50|mgmtd] sending configuration
+[51|zebra] sending configuration
+[57|bgpd] sending configuration
+[66|staticd] sending configuration
+[51|zebra] done
+[71|watchfrr] sending configuration
+Waiting for children to finish applying config...
+[66|staticd] done
+[50|mgmtd] done
+[57|bgpd] done
+2026/10/04 16:44:44 WATCHFRR: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
+[71|watchfrr] done
+2026/10/04 16:44:44 WATCHFRR: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded
+2026/10/04 16:44:44 WATCHFRR: [QDG3Y-BY5TN] zebra state -> up : connect succeeded
+2026/10/04 16:44:44 WATCHFRR: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded
+2026/10/04 16:44:44 WATCHFRR: [QDG3Y-BY5TN] staticd state -> up : connect succeeded
+2026/10/04 16:44:44 WATCHFRR: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify

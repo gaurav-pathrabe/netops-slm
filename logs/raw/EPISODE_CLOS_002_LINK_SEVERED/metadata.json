@@ -1,0 +1,9 @@
+{
+  "fault_type": "CLOS_SPINE_LINK_SEVERED",
+  "optimal_action": "none",
+  "affected_nodes": [
+    "leaf-1",
+    "spine-1"
+  ],
+  "diagnosis": "physical_spine_link_failure"
+}
