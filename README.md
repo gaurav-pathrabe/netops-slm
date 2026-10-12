@@ -540,8 +540,14 @@ Evaluated end-to-end on local host hardware using [`src/evaluation/evaluate_mole
 
 Audit report preserved in: [`reports/mole_phase4_evaluation.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/mole_phase4_evaluation.md).
 
-### 12.4 How to Reproduce Phase 4
+### 12.4 How to Train the MoLE Experts & Reproduce Phase 4
 
+#### 1-Click Free Cloud Training (Google Colab / Tesla T4 – $0 Spend):
+Open and run [`notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/notebooks/NetOps_MoLE_Multi_Expert_Training.ipynb) in Google Colab:
+- Trains `expert_bgp_protocol`, `expert_clos_fabric`, and `expert_template_gate` sequentially in ~12 minutes using 4-bit NF4 QLoRA.
+- Automatically generates and downloads `mole_trained_adapters.zip` to unpack into [`models/`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/models/).
+
+#### Local Verification & Dry-Run Pipeline:
 ```bash
 # 1. Distill raw CLOS episodes into compact ShareGPT format
 python src/dataset/clos_telemetry_distiller.py
