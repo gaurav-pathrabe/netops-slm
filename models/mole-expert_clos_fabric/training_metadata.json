@@ -1,0 +1,19 @@
+{
+  "expert_name": "expert_clos_fabric",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "training_time_sec": 17.51,
+  "examples_trained": 5,
+  "epochs": 5,
+  "status": "TRAINED_SUCCESS"
+}

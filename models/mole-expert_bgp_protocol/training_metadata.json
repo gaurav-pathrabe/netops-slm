@@ -1,0 +1,16 @@
+{
+  "expert_name": "expert_bgp_protocol",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+  ],
+  "training_time_sec": 117.07,
+  "examples_trained": 73,
+  "epochs": 3,
+  "status": "TRAINED_SUCCESS"
+}

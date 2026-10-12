@@ -1,0 +1,14 @@
+{
+  "expert_name": "expert_template_gate",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "target_modules": [
+    "q_proj",
+    "v_proj"
+  ],
+  "training_time_sec": 9.42,
+  "examples_trained": 4,
+  "epochs": 5,
+  "status": "TRAINED_SUCCESS"
+}
