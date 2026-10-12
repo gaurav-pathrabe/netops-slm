@@ -1,0 +1,10 @@
+{
+  "episode_id": "EPISODE_023_BGP_NEIGHBOR_ADMIN_SHUTDOWN_03",
+  "incident_family": "bgp_neighbor_admin_shutdown",
+  "target_container": "clab-netops-bgp-lab-router-a",
+  "target_device": "router-a",
+  "peer_ip": "10.77.0.2",
+  "injection_timestamp": "2026-10-04T16:46:03.534437+00:00",
+  "captured_at": "2026-10-04T16:46:15.816651+00:00",
+  "ground_truth_fault": "bgp_neighbor_admin_shutdown"
+}

@@ -512,7 +512,7 @@ The MoLE engine configures three specialized LoRA adapter modules over a shared 
 
 1. **Expert 1: BGP Protocol State Machine Specialist (`expert_bgp_protocol`)**
    - **Domain:** Single-router BGP FSM transitions, administrative shutdowns, bad remote ASNs, missing prefix originations, and transport carrier loss.
-   - **Training Corpus:** 23 authentic single-router episodes (`dataset/mole_expert_bgp.jsonl`).
+   - **Training Corpus:** 73 authentic single-router episodes (`dataset/mole_expert_bgp.jsonl`).
    - **Adapter Configuration:** LoRA rank `r=16`, `alpha=32`, target modules: `q_proj`, `k_proj`, `v_proj`, `o_proj`.
 2. **Expert 2: CLOS Fabric & Multi-Path Specialist (`expert_clos_fabric`)**
    - **Domain:** Multi-node Spine-Leaf CLOS topologies, ECMP routing resilience, asymmetric MTU clamping, silent route blackholes, and optical flap damping.
@@ -530,13 +530,13 @@ Evaluated end-to-end on local host hardware using [`src/evaluation/evaluate_mole
 | Evaluation Metric | Target Invariant | Measured Result | Status |
 | :--- | :--- | :--- | :---: |
 | **CLOS Telemetry Compression** | Distill ~12 KB JSON to < 750 tokens | **~479 tokens (96.0% compaction)** | **PASSED [OK]** |
-| **MoLE Routing Accuracy** | 100% Correct Expert Dispatch | **28/28 (100.0%)** | **PASSED [OK]** |
-| **TypedActionGate Compliance** | 100% Schema & Boundary Validation | **32/32 (100.0%)** | **PASSED [OK]** |
+| **MoLE Routing Accuracy** | 100% Correct Expert Dispatch | **78/78 (100.0%)** | **PASSED [OK]** |
+| **TypedActionGate Compliance** | 100% Schema & Boundary Validation | **82/82 (100.0%)** | **PASSED [OK]** |
 | **Invariant 1: Flap Damping Guard** | Intercept ≥ 2 flaps in 15 mins | **Hard Lockout Triggered** | **PASSED [OK]** |
 | **Invariant 4: Zero CLI Injection** | Reject raw bash/cli injections | **100% Rejected** | **PASSED [OK]** |
 | **Invariant 8: Asymmetric MTU Drain** | Isolate MTU drops via BGP MED 65535 | **Graceful Route-Map Rendered** | **PASSED [OK]** |
-| **MoLE Router Dispatch Latency** | < 1.0 ms deterministic fast-path | **0.0375 ms** | **PASSED [OK]** |
-| **Safety Gate Render Latency** | < 0.5 ms template compilation | **0.0028 ms** | **PASSED [OK]** |
+| **MoLE Router Dispatch Latency** | < 1.0 ms deterministic fast-path | **0.0256 ms** | **PASSED [OK]** |
+| **Safety Gate Render Latency** | < 0.5 ms template compilation | **0.0017 ms** | **PASSED [OK]** |
 
 Audit report preserved in: [`reports/mole_phase4_evaluation.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/mole_phase4_evaluation.md).
 
