@@ -171,10 +171,11 @@ class DashboardRequestHandler(http.server.SimpleHTTPRequestHandler):
                 "hardware_profile": "NVIDIA RTX 2050 4GB Laptop Profile ($0 Cloud Spend)",
                 "total_episodes_indexed": 78,
                 "mole_experts": [
-                    {"name": "expert_bgp_protocol", "role": "BGP FSM Specialist", "corpus_size": 73},
-                    {"name": "expert_clos_fabric", "role": "Spine-Leaf CLOS Specialist", "corpus_size": 5},
-                    {"name": "expert_template_gate", "role": "Safety Gate Synthesizer", "corpus_size": 4}
+                    {"name": "expert_bgp_protocol", "role": "BGP FSM Specialist", "corpus_size": 73, "adapter_weights": "17.5 MB (r=16, alpha=32)", "training_time_sec": 117.07, "status": "ONLINE_ARMED"},
+                    {"name": "expert_clos_fabric", "role": "Spine-Leaf CLOS Specialist", "corpus_size": 5, "adapter_weights": "73.9 MB (r=16 all-linear)", "training_time_sec": 17.51, "status": "ONLINE_ARMED"},
+                    {"name": "expert_template_gate", "role": "Safety Gate Synthesizer", "corpus_size": 4, "adapter_weights": "4.4 MB (r=8, alpha=16)", "training_time_sec": 9.42, "status": "ONLINE_ARMED"}
                 ],
+                "adapters_trained": True,
                 "invariants_shield": {
                     "inv_1_flap_guard": "ACTIVE",
                     "inv_3_engineer_shield": "ACTIVE",
@@ -298,6 +299,7 @@ class DashboardRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server(port: int = PORT):
     os.makedirs(PUBLIC_DIR, exist_ok=True)
+    socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", port), DashboardRequestHandler) as httpd:
         logging.info(f"[+] NetOps-SLM Web NOC Dashboard active at http://localhost:{port}")
         try:
