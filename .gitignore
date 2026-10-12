@@ -19,6 +19,10 @@ Thumbs.db
 # Temporary outputs
 *.tmp
 
+# Containerlab runtime
+clab-*/
+lab/clab-*/
+
 # LaTeX build artifacts
 *.aux
 *.log
@@ -29,3 +33,4 @@ Thumbs.db
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+

@@ -9,6 +9,7 @@
 [![Containerlab](https://img.shields.io/badge/Containerlab-v0.79-blueviolet.svg)](https://containerlab.dev/)
 [![Models](https://img.shields.io/badge/Models-Qwen2.5--Coder%201.5B%20%7C%207B-brightgreen.svg)](https://huggingface.co/Qwen)
 [![Spend](https://img.shields.io/badge/Cloud%20Spend-%240.00%20(Free%20Tier)-success.svg)](https://colab.research.google.com/)
+[![Branch: v3 Spine-Leaf CLOS ECMP](https://img.shields.io/badge/Branch-v3_Spine--Leaf_CLOS_ECMP-blueviolet.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
 [![Branch: main (1.5B Edge)](https://img.shields.io/badge/Branch-main_(1.5B_Edge)-blue.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)](LICENSE)
 
@@ -29,9 +30,9 @@ An open-source, evidence-based network diagnosis and automated remediation syste
 2. **Tier-2 Explanatory Copilot:** Cloud-adapted 8B Foundation Model (`Qwen2.5-Coder-7B-Instruct`) fine-tuned with 4-bit QLoRA on authentic Containerlab telemetry, generating human-grade Root Cause Analysis (RCA) tickets and post-mortems for Network Operations Centers (NOC).
 
 > [!NOTE]
-> ### 📍 Looking for the Local Edge 1.5B SLM Implementation?
-> This branch (`feature/netops-v2-cloud-8b-benchmark`) contains our **8B Cloud Scaling, Two-Tier Co-Pilot, and 50-Episode Expansion** research.
-> * If you want to explore the **edge-native 1.5B SLM architecture tailored for local execution on consumer hardware (NVIDIA GeForce RTX 2050 4GB, $0.00 cloud spend)**, check out our **[`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main)** branch.
+> ### 🌐 Cross-Version Architecture Navigation
+> * **Looking for NetOps-SLM v3 (Spine-Leaf CLOS Fabric & MoLE)?** Check out [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe) for our 4-Node Spine-Leaf CLOS Data Center Fabric (RFC 7938), eBGP ECMP failover, 3-Expert Mixture of LoRA Experts (MoLE), and Batfish-style In-Memory Digital Twin Pre-Flight Verifier with real-time Web NOC Dashboard.
+> * **Looking for the Local Edge 1.5B SLM Implementation?** Check out [`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main) for local execution on consumer hardware (NVIDIA GeForce RTX 2050 4GB, $0.00 cloud spend).
 > * See the [Section 2 Benchmark Matrix](#2-comprehensive-empirical-benchmark-matrix) below for the side-by-side comparison across Edge 1.5B and Cloud 8B.
 
 ---
@@ -350,3 +351,14 @@ If you use NetOps-SLM, the Containerlab authentic dataset, or the empirical benc
 
 **APA Citation:**
 > Pathrabe, G. P. (2026). *NetOps-SLM: A Two-Tier Co-Pilot Architecture for Sub-Millisecond Autonomous Network Remediation and Explainable RCA*. Zenodo. https://doi.org/10.5281/zenodo.23155789
+
+---
+
+## 12. Cross-Branch Navigation & Version Roadmap
+
+| Research Generation | Branch | Architecture Highlights | Target Hardware |
+| :--- | :--- | :--- | :--- |
+| **v1: Edge 1.5B Baseline** | [`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main) | 2-Node BGP point-to-point, local 1.5B QLoRA, basic `TypedActionGate` | Laptop RTX 2050 (4 GB) |
+| **v2: Cloud 8B Benchmark** | [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark) | Two-tier Co-Pilot, 8B QLoRA, 73 episodes, Sysadmin Reflex eradication | Google Colab T4 |
+| **v3: Spine-Leaf CLOS MoLE** | [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe) | 4-Switch CLOS RFC 7938, ECMP resilience, 3-Expert MoLE, Digital Twin Verifier, Web NOC Dashboard | Laptop WSL2 + Colab T4 |
+
