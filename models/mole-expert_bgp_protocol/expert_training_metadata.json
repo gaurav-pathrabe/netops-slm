@@ -1,0 +1,16 @@
+{
+  "expert_name": "expert_bgp_protocol",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+  ],
+  "dataset_examples": 23,
+  "output_dir": "C:\\Users\\kali\\Downloads\\cmdc\\NetOps_LLM_and_Jobs\\models\\mole-expert_bgp_protocol",
+  "status": "VALIDATED_READY_FOR_GPU",
+  "timestamp": 1791822366.5106673
+}

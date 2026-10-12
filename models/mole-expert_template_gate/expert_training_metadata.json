@@ -1,0 +1,14 @@
+{
+  "expert_name": "expert_template_gate",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "target_modules": [
+    "q_proj",
+    "v_proj"
+  ],
+  "dataset_examples": 4,
+  "output_dir": "C:\\Users\\kali\\Downloads\\cmdc\\NetOps_LLM_and_Jobs\\models\\mole-expert_template_gate",
+  "status": "VALIDATED_READY_FOR_GPU",
+  "timestamp": 1791822366.5151355
+}

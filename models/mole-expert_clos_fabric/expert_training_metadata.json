@@ -1,0 +1,19 @@
+{
+  "expert_name": "expert_clos_fabric",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "dataset_examples": 5,
+  "output_dir": "C:\\Users\\kali\\Downloads\\cmdc\\NetOps_LLM_and_Jobs\\models\\mole-expert_clos_fabric",
+  "status": "VALIDATED_READY_FOR_GPU",
+  "timestamp": 1791822366.5133996
+}
