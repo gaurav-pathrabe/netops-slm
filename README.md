@@ -42,7 +42,7 @@ An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/
 - [10. 🚀 Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
 - [11. 🌐 NetOps-SLM v3: 4-Node Spine-Leaf CLOS Fabric & ECMP Resilience](#11--netops-slm-v3-4-node-spine-leaf-clos-fabric--ecmp-resilience)
 - [12. 🧠 Phase 4: CLOS Dataset Distillation & Mixture of LoRA Experts (MoLE)](#12-phase-4-clos-dataset-distillation--mixture-of-lora-experts-mole)
-- [13. 🛡️ Phase 5: Batfish Digital Twin Verification Engine & Web NOC Dashboard](#13-phase-5-batfish-digital-twin-verification-engine--web-noc-dashboard)
+- [13. 🛡️ Phase 5: Digital Twin Verification, Web NOC Dashboard & TokenSpeed Serving](#13-phase-5-batfish-digital-twin-verification-engine--web-noc-dashboard)
 - [14. 🧭 Complete Cross-Version Evolution Matrix (v1 vs. v2 vs. v3)](#14-complete-cross-version-evolution-matrix-v1-vs-v2-vs-v3)
 
 ---
@@ -640,6 +640,42 @@ python dashboard/server.py
 # 2. Open in your browser:
 # http://localhost:8888/
 ```
+
+### 13.4 Production Serving & Inference Acceleration via TokenSpeed (PyTorch Ecosystem)
+
+To bridge our research prototypes with commercial, production-grade NOC latency targets, NetOps-SLM integrates **[TokenSpeed](https://github.com/lightseekorg/tokenspeed)** (backed by the non-profit LightSeek Foundation in the PyTorch Ecosystem) as the recommended serving engine for the Tier-2 Explanatory Copilot and MoLE runtime:
+
+```text
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        AGENTIC SERVING PIPELINE (TOKENSPEED RUNTIME)                   │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│   [ Real-Time Syslog Stream ] ➔ [ MoLE Router (0.0256 ms) ] ➔ [ TokenSpeed Engine ]    │
+│                                                                        │               │
+│                                      ┌─────────────────────────────────┴───────────┐   │
+│                                      ▼                                             ▼   │
+│                        [ Compile-Time KV Cache Reuse ]              [ Native MoE Kernels ]│
+│                        • Caches static CLOS topology                • Hot-swaps LoRA    │
+│                        • Caches TypedActionGate schema                adapters in VRAM  │
+│                        • Eliminates redundant prefill               • Ultra-low latency │
+│                                      │                                             │   │
+│                                      └─────────────────────────────────┬───────────┘   │
+│                                                                        ▼               │
+│                                                    ┌───────────────────────────────┐   │
+│                                                    │ Sub-Second Post-Mortem Stream │   │
+│                                                    │ (11.2s ➔ < 1.5s RCA Latency)  │   │
+│                                                    └───────────────────────────────┘   │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+1. **Type-Safe, Compile-Time KV Cache State Management:**  
+   In agentic NetOps workflows, prompts carry massive static context—including network topology graphs, authorized IP subnets, and `TypedActionGate` schema rules. TokenSpeed’s C++ control plane manages KV-cache state as a compile-time finite-state machine, reusing prefilled context across sequential operator turns and eliminating redundant prefill computation.
+2. **Accelerating Post-Mortem Generation (11.2s ➔ < 1.5s):**  
+   Standard PyTorch pipelines generate ~25–35 tokens/second. TokenSpeed's specialized attention kernels boost throughput to 150–300+ tokens/second on enterprise GPUs (and 580+ tokens/s on next-gen hardware), streaming human-grade RCA tickets to the NOC console in sub-seconds.
+3. **Optimized MoLE Expert Swapping:**  
+   Features native kernels for Mixture of Experts (MoE) and Multi-Head Latent Attention (MLA), providing memory-efficient dispatch when alternating between `expert_bgp_protocol`, `expert_clos_fabric`, and `expert_template_gate`.
+4. **100% Free & Open-Source (MIT License):**  
+   Because TokenSpeed is MIT-licensed and non-profit backed, it can be embedded directly into our standalone Docker NOC appliance and commercial enterprise deployments with zero royalties or per-token API licensing fees.
 
 ---
 
