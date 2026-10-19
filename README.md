@@ -6,6 +6,7 @@
 [![Zero-Cloud Cost](https://img.shields.io/badge/Spend-$0.00_Local_WSL2-blue.svg)](#6-hardware--resource-profile)
 [![Safety Boundary](https://img.shields.io/badge/Safety_Gate-100%25_Intercepted_(0_Breaches)-brightgreen.svg)](#3-outer-loop-safety-architecture)
 [![Telemetry Provenance](https://img.shields.io/badge/Telemetry-100%25_Authentic_FRR_(Zero_Synthetic)-orange.svg)](#4-authentic-telemetry-dataset)
+[![Branch: v4 Autonomous Boundary](https://img.shields.io/badge/Branch-v4_Autonomous_Boundary-success.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v4-autonomous-boundary)
 [![Branch: v3 Spine-Leaf CLOS ECMP](https://img.shields.io/badge/Branch-v3_Spine--Leaf_CLOS_ECMP-blueviolet.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe)
 [![Branch: v2 Cloud 8B Benchmark](https://img.shields.io/badge/Branch-v2_Cloud_8B_Benchmark-8A2BE2.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark)
 [![Branch: main (v1 Edge 1.5B)](https://img.shields.io/badge/Branch-main_(v1_Edge_1.5B)-blue.svg)](https://github.com/gaurav-pathrabe/netops-slm/tree/main)
@@ -16,16 +17,17 @@
 An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/BGP routing faults directly on consumer laptop hardware (NVIDIA GeForce RTX 2050 4GB). Investigates whether a 4-bit quantized Small Language Model (`Qwen2.5-Coder-1.5B`) fine-tuned on real routing telemetry can safely self-heal network outages—or whether a deterministic, rule-based runbook remains the optimal production engine.
 
 > [!IMPORTANT]
-> ### 🌐 NetOps-SLM v3 is Live: 4-Node Spine-Leaf CLOS Fabric & ECMP Resilience Engine
-> This branch (`feature/netops-v3-spine-leaf-moe`) expands our research from point-to-point router links into a **4-Node Spine-Leaf CLOS Data Center Fabric (RFC 7938)** with **Equal-Cost Multi-Path (ECMP)** load balancing:
+> ### 🛡️ NetOps-SLM v4 is Live: The Autonomous Verification Boundary & Model Adapter Framework
+> This branch (`feature/netops-v4-autonomous-boundary`) operationalizes Phase 0 of the vendor-neutral autonomous control loop:
 > 
-> * **4-Switch CLOS Topology:** `spine-1`, `spine-2`, `leaf-1`, `leaf-2` emulated via Containerlab FRR 10.7.1 + 2 client endpoints (`client-1`, `client-2`).
-> * **eBGP Multipath (ECMP):** Traffic between `client-1` and `client-2` distributes 50/50 across both spines (`maximum-paths 64`).
-> * **Zero-Downtime Link Failover:** Severing `leaf-1:eth1` causes 0 packet drops—the Linux kernel FIB dynamically switches to `spine-2` in < 1 ms.
-> * **CLOS Fault Injection Suite:** Comprehensive test harness in [`lab/scripts/inject_spine_leaf_fault.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/scripts/inject_spine_leaf_fault.py) testing MTU mismatches, route blackholes, and flap damping.
-> * **Strict Hardware Footprint:** All 6 containers run concurrently on a consumer laptop in WSL2 using **< 250 MB total RAM**.
+> * **The Form vs. Physics Boundary:** Language models propose hypotheses in the form domain; physical switch networks execute state in the physics domain. The trusted boundary between them is the company.
+> * **15-Class Formal Fault Ontology:** Codified in [`src/verification/fault_ontology.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/fault_ontology.py), mapping Root Cause × Observable Telemetry × Diagnostic Tools × Typed Action × Rollback × Safety Tier.
+> * **The Ten Mandatory Gate Checks:** Codified in [`src/verification/typed_action_gate.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) with pre-computed inverse actions (`render_rollback_template`) and `evaluate_ten_checks()` enforcing 0 unsafe actions.
+> * **Incident Episode Schema v1:** Codified in [`src/verification/episode_schema.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/episode_schema.py) with tamper-evident SHA-256 cryptographic audit digests.
+> * **Model Adapter Framework:** Codified in [`src/models/model_adapter.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/models/model_adapter.py), decoupling the loop from model weights and eliminating token-soup via compact typed observation schemas.
+> * **100% Invariant Pass:** Automated verification test suite in [`src/verification/test_phase0_boundary.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/test_phase0_boundary.py) passing all invariants.
 > 
-> *See [Section 11](#11--netops-slm-v3-4-node-spine-leaf-clos-fabric--ecmp-resilience) below for the full architecture and test results.*
+> *Prior branches remain fully preserved:* [`feature/netops-v3-spine-leaf-moe`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v3-spine-leaf-moe) (CLOS fabric & MoE), [`feature/netops-v2-cloud-8b-benchmark`](https://github.com/gaurav-pathrabe/netops-slm/tree/feature/netops-v2-cloud-8b-benchmark) (8B benchmark), and [`main`](https://github.com/gaurav-pathrabe/netops-slm/tree/main) (v1 prototype).*
 
 ---
 
