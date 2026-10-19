@@ -1,16 +1,14 @@
 """
-digital_twin_verifier.py - Pre-Flight In-Memory Digital Twin Verification Engine
+digital_twin_verifier.py - In-Memory Topology Graph Verifier
+Simulates control plane routing and data plane forwarding paths on an in-memory graph model
+(such as the 6-node CLOS spine-leaf or 2-router BGP lab) BEFORE applying remediations.
 
-Implements formal pre-flight network verification (inspired by Batfish / Minesweeper / Hassel).
-Simulates control plane routing and data plane forwarding on a cloned in-memory topology
-BEFORE applying remediations to live hardware or containerlab switches.
-
-Guarantees:
-1. End-to-End Reachability: client-1 <-> client-2 traffic is guaranteed forwardable.
-2. Loop Freedom: Proves acyclic forwarding (no forwarding loops).
-3. Blackhole Immunity: Proves no traffic is routed to down interfaces or null routes.
-4. Capacity-Aware Redundancy (Invariant 7): Proves alternate ECMP paths have sufficient capacity.
-5. Cryptographic Proof (Invariant 11): Produces SHA-256 signed audit certificate for NOC compliance.
+Verifications Performed:
+1. End-to-End Reachability: BFS graph traversal verifies paths exist between endpoints.
+2. Loop Freedom: Proves acyclic forwarding (cycle detection on forwarding paths).
+3. Blackhole Immunity: Proves no traffic routes through administratively down or severed links.
+4. Capacity-Aware Redundancy: Assesses alternate ECMP link availability during drain actions.
+5. Audit Certificate: Computes SHA-256 fingerprint of pre-flight state for NOC compliance.
 """
 
 import copy

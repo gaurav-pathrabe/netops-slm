@@ -109,6 +109,17 @@ class TypedActionGate:
         self.flap_history[target].append(ts)
         return len(self.flap_history[target])
 
+    def get_inventory_for_payload(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Dynamically resolves inventory between 2-Node Legacy Lab and 4-Node CLOS Fabric."""
+        params = payload.get("parameters", {})
+        nodes = payload.get("affected_nodes", [])
+        target = params.get("device") or (nodes[0] if (isinstance(nodes, list) and len(nodes) > 0) else None)
+        if target in LEGACY_INVENTORY["devices"]:
+            return LEGACY_INVENTORY
+        if target in CLOS_INVENTORY["devices"]:
+            return CLOS_INVENTORY
+        return self.inventory
+
     def validate_action_payload(self, payload: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """Validates JSON schema, key types, permitted actions, inventory bounds, and safety invariants."""
         errors = []
@@ -122,7 +133,9 @@ class TypedActionGate:
             return False, errors
 
         # 2. Abstention check
-        if payload.get("abstain") is True:
+        abstain_val = payload.get("abstain")
+        is_abstain = (abstain_val is True) or (str(abstain_val).strip().lower() == "true")
+        if is_abstain:
             if payload.get("action") not in ["none", ""]:
                 errors.append("Invalid abstention: action must be 'none' when abstain is True")
             return len(errors) == 0, errors
@@ -132,23 +145,61 @@ class TypedActionGate:
         if action not in PERMITTED_ACTIONS:
             errors.append(f"Forbidden action: '{action}' is not in permitted actions list {PERMITTED_ACTIONS}")
 
+        # Resolve active inventory for this payload (auto-detects legacy vs. CLOS)
+        active_inv = self.get_inventory_for_payload(payload)
+
         # 4. Inventory boundaries check
         nodes = payload.get("affected_nodes", [])
+        if not isinstance(nodes, list):
+            errors.append("Schema error: 'affected_nodes' must be a list")
+            nodes = []
         for node in nodes:
-            if node not in self.inventory["devices"]:
+            if node not in active_inv["devices"]:
                 errors.append(f"Inventory violation: unknown device '{node}'")
 
         params = payload.get("parameters", {})
+        if not isinstance(params, dict):
+            errors.append("Schema error: 'parameters' must be a dictionary")
+            params = {}
+
         device = params.get("device")
         neighbor = params.get("neighbor")
         prefix = params.get("prefix")
+        expected_as = params.get("expected_remote_as")
+        iface = params.get("interface")
 
-        if device not in self.inventory["devices"]:
+        # Sanitize parameters against shell injection characters
+        for param_key, param_val in params.items():
+            if isinstance(param_val, str):
+                if any(c in param_val for c in [";", "&", "|", "`", "$", "(", ")", "<", ">", "\n", "\r", "'", '"']):
+                    errors.append(f"Command injection detected in parameter '{param_key}': forbidden characters")
+
+        if device not in active_inv["devices"]:
             errors.append(f"Parameter error: device '{device}' is not recognized in lab inventory")
-        elif neighbor and neighbor not in self.inventory["neighbors"].get(device, []):
+        elif neighbor and neighbor not in active_inv["neighbors"].get(device, []):
             errors.append(f"Parameter error: neighbor '{neighbor}' is not an authorized peer for device '{device}'")
-        elif prefix and prefix not in self.inventory["subnets"]:
+        elif prefix and prefix not in active_inv["subnets"]:
             errors.append(f"Parameter error: prefix '{prefix}' is not in authorized inventory subnets")
+
+        # Parameter validation for correct_remote_as
+        if action == "correct_remote_as" and expected_as is not None:
+            try:
+                as_num = int(expected_as)
+                if not (1 <= as_num <= 4294967295):
+                    errors.append(f"Parameter error: expected_remote_as '{as_num}' is outside valid 32-bit ASN range")
+            except (ValueError, TypeError):
+                errors.append(f"Parameter error: expected_remote_as '{expected_as}' must be an integer")
+
+        # Parameter validation for isolate_degraded_path (uplink role check)
+        if action == "isolate_degraded_path":
+            target_iface = iface or "eth1"
+            # In CLOS fabric, eth1 and eth2 are transit uplinks; eth3 is client-facing; eth0 is mgmt
+            allowed_transit_uplinks = ["eth1", "eth2"]
+            if target_iface not in allowed_transit_uplinks:
+                errors.append(
+                    f"Interface Role Violation: interface '{target_iface}' cannot be isolated. "
+                    f"Only transit uplinks {allowed_transit_uplinks} may be isolated; client/mgmt interfaces are protected."
+                )
 
         # 5. Invariant 1: BGP Flap Damping Guard (Anti-Oscillation)
         target_entity = neighbor or device
@@ -177,7 +228,7 @@ class TypedActionGate:
         """
         Renders safe, deterministic vtysh commands from validated typed action.
         Model text is never executed directly (Invariant 4).
-        If enforce_preflight is True, formally proves reachability and loop-freedom on the digital twin.
+        If enforce_preflight is True, proves reachability and loop-freedom on the digital twin.
         """
         is_valid, errors = self.validate_action_payload(payload)
         if not is_valid:
@@ -186,20 +237,21 @@ class TypedActionGate:
         if payload.get("abstain") is True or payload.get("action") == "none":
             return True, [], "# Action abstained. No network commands executed."
 
-        # Pre-Flight Formal Verification Gate
+        # Pre-Flight Verification Gate
         if enforce_preflight and self.digital_twin:
             proof = self.verify_preflight(incident_id, payload, initial_telemetry)
             if proof and not proof.preflight_passed:
                 return False, [f"Digital Twin Pre-Flight Rejection: {c}" for c in proof.counterexamples], ""
 
+        active_inv = self.get_inventory_for_payload(payload)
         action = payload.get("action")
         params = payload.get("parameters", {})
         device = params.get("device")
         neighbor = params.get("neighbor")
         prefix = params.get("prefix")
         expected_as = params.get("expected_remote_as")
-        asn = self.inventory["asns"].get(device)
-        prefix_cname = self.inventory.get("prefix", "clab-netops-spine-leaf-lab-")
+        asn = active_inv["asns"].get(device)
+        prefix_cname = active_inv.get("prefix", "clab-netops-spine-leaf-lab-")
 
         if action == "reenable_bgp_neighbor":
             command = (
@@ -211,7 +263,7 @@ class TypedActionGate:
             return True, [], command
 
         elif action == "correct_remote_as":
-            target_as = expected_as if expected_as else 65100
+            target_as = int(expected_as) if expected_as else (65002 if device == "router-a" else 65100)
             command = (
                 f"docker exec {prefix_cname}{device} vtysh "
                 f"-c 'configure terminal' "
@@ -221,7 +273,7 @@ class TypedActionGate:
             return True, [], command
 
         elif action == "originate_prefix":
-            target_prefix = prefix if prefix else ("10.77.1.0/24" if "leaf-1" in device else "10.77.2.0/24")
+            target_prefix = prefix if prefix else ("10.77.1.0/24" if ("leaf-1" in device or "router-a" in device) else "10.77.2.0/24")
             command = (
                 f"docker exec {prefix_cname}{device} vtysh "
                 f"-c 'configure terminal' "
@@ -249,7 +301,7 @@ class TypedActionGate:
             return True, [], command
 
         elif action == "isolate_degraded_path":
-            # Temporarily brings down a blackholing interface on the leaf switch
+            # Temporarily brings down a blackholing uplink interface on the leaf switch
             iface = params.get("interface", "eth1")
             command = f"docker exec {prefix_cname}{device} ip link set dev {iface} down"
             return True, [], command

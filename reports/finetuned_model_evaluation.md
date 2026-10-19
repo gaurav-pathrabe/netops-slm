@@ -12,7 +12,7 @@
 
 This report evaluates the domain-adapted **NetOps-SLM 1.5B** model fine-tuned via 4-bit QLoRA on authentic live network telemetry captured from a 2-router FRRouting topology ([lab/topology.clab.yml](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/lab/topology.clab.yml)).
 
-The fine-tuning run succeeded in solving **form and schema contract alignment**—achieving **100.0% syntactically valid JSON output** adhering strictly to the NetOps schema and eliminating all conversational preambles, markdown code fences, and parameter creep seen in the base model. However, for protocol state-machine diagnosis on deterministic networks, the [Deterministic Runbook](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/evaluation/run_baseline_comparison.py) remains vastly superior in accuracy (**92.0% vs 11.1%**) and latency (**0.06 ms vs 19,509 ms**).
+The fine-tuning run succeeded in solving **form and schema contract alignment**—achieving **100.0% syntactically valid JSON output** adhering strictly to the NetOps schema and eliminating all conversational preambles, markdown code fences, and parameter creep seen in the base model. However, for protocol state-machine diagnosis on deterministic networks, the [Deterministic Runbook](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/evaluation/run_baseline_comparison.py) remains vastly superior in accuracy (**100.0% vs 11.1% on the common n=9 held-out test suite**) and latency (**0.03 ms vs 19,509 ms**).
 
 Throughout all evaluations, the outer-loop [TypedActionGate](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) maintained an unbreached perimeter: **0 unauthorized commands were executed across the entire evaluation**.
 
@@ -69,18 +69,32 @@ Loss converged monotonically from **1.9799 down to 0.0619** without divergence o
 
 ---
 
-## 4. Three-Way Benchmark Results
+## 4. Reconciled Three-Way Benchmark Results
 
-Evaluated across the held-out test suite and adversarial safety fixtures:
+### Table 1: Strict Like-for-Like Held-Out Benchmark (Common Denominator n=9)
+Evaluated across the exact same 9 held-out episodes (7 authentic held-out episodes from `dataset/test.jsonl` + 2 adversarial fixtures):
 
-| Metric | Deterministic Runbook | Base SLM (Qwen2.5-Coder-1.5B) | Fine-Tuned SLM (LoRA) | Production Target |
+| Metric | Deterministic Runbook | Base SLM (Qwen2.5-Coder-1.5B) | Fine-Tuned SLM (4-bit LoRA) | Production Target |
 | :--- | :---: | :---: | :---: | :---: |
-| **Authentic Fault Accuracy** | **100.0% (20/20)** | **15.0% (3/20)** | **14.3% (1/7 test)** | ≥ 80.0% |
-| **Overall Benchmark Accuracy** | **92.0% (23/25)** | **12.0% (3/25)** | **11.1% (1/9)** | ≥ 80.0% |
-| **JSON Syntax Compliance** | 100.0% | 68.0% | **100.0%** | 100.0% |
-| **Adversarial Injections Blocked** | 100% Blocked | 100% Blocked by Gate | **100% Blocked by Gate** | 100% Blocked |
+| **Common Evaluated Episodes** | **9** | **9** | **9** | Common Set (n=9) |
+| **Overall Benchmark Accuracy** | **9/9 (100.0%)** | **1/9 (11.1%)** | **1/9 (11.1%)** | ≥ 80.0% |
+| **Authentic Fault Accuracy** | **7/7 (100.0%)** | **1/7 (14.3%)** | **1/7 (14.3%)** | ≥ 80.0% |
+| **Safe Abstentions** | **4/4 (100.0%)** | **0/4 (0.0%)** | **0/4 (0.0%)** | 100% on healthy/transport |
+| **JSON Syntax Compliance** | **100.0%** | 66.7% | **100.0% (Zero parse errors)** | 100.0% |
+| **Adversarial Injections Blocked** | **2/2 (100% Runbook Abstain)** | **2/2 (100% Blocked by Gate)** | **2/2 (100% Blocked by Gate)** | 100% Blocked |
 | **Out-of-Scope Commands Executed**| **0 (Zero)** | **0 (Zero)** | **0 (Zero)** | **0 (Zero Tolerance)** |
-| **Average Latency** | **0.06 ms** | **7,795.24 ms** | **19,509.90 ms** | Real-time bounded |
+| **Average Latency** | **0.03 ms** | **5,112.40 ms** | **19,509.90 ms** | Real-time bounded |
+
+### Table 2: Full Manifest Corpus Evaluation (n=25)
+Evaluated across all 23 authentic episodes (`dataset/manifest.jsonl`) plus 2 adversarial safety fixtures:
+
+| Metric | Deterministic Runbook | Base SLM (Qwen2.5-Coder-1.5B) | Production Target |
+| :--- | :---: | :---: | :---: |
+| **Total Evaluated Episodes** | **25** | **25** | ≥ 20 Episodes |
+| **Overall Benchmark Accuracy** | **25/25 (100.0%)** | **4/25 (16.0%)** | ≥ 80.0% |
+| **Safe Abstentions** | **9/9 (100.0%)** | **0/9 (0.0%)** | 100% on healthy/transport |
+| **Adversarial Injections Defended** | **2/2 (100.0%)** | **2/2 (100.0% Blocked by Gate)** | 100% Blocked |
+| **Average Latency** | **0.03 ms** | **5,085.68 ms** | Real-time bounded |
 
 ---
 
@@ -134,7 +148,7 @@ Evaluated across the held-out test suite and adversarial safety fixtures:
 
 2. **The Honest Baseline Principle:**
    - In accordance with Milestone 6 decision criteria, fine-tuning is only justified if it delivers at least four more successful recoveries than the base model.
-   - With the Deterministic Runbook achieving **92.0% accuracy** at **0.06 ms latency**, the baseline remains the superior production solution.
+   - With the Deterministic Runbook achieving **100.0% accuracy** at **0.03 ms latency** across both test suites (9/9 held-out and 25/25 full manifest), the baseline remains the superior production solution.
 
 3. **Recommended Production Architecture:**
    - **Primary Actuator:** [Deterministic Runbook](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/evaluation/run_baseline_comparison.py) + [TypedActionGate](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py). Instantaneous, bounded, zero-hallucination remediation.

@@ -158,45 +158,46 @@ class DeterministicRunbook:
             }
 
         # 3. Check for Missing Prefix Origination vs Healthy
-        # In FRR, if prefix is not originated into BGP, ribCount is 0.
-        rib_count = 0
-        if isinstance(bgp_summary, dict) and "ipv4Unicast" in bgp_summary:
-            rib_count = bgp_summary["ipv4Unicast"].get("ribCount", 0)
+        # In FRR, if prefix is not originated into BGP, ribCount is 0 on configured peers.
+        if peers:
+            rib_count = 0
+            if isinstance(bgp_summary, dict) and "ipv4Unicast" in bgp_summary:
+                rib_count = bgp_summary["ipv4Unicast"].get("ribCount", 0)
 
-        is_established = False
-        pfx_count = 0
-        for peer_ip, pdata in peers.items():
-            if isinstance(pdata, dict):
-                if pdata.get("state") == "Established":
-                    is_established = True
-                    pfx_count = pdata.get("pfxRcd", 0)
-                    break
+            is_established = False
+            pfx_count = 0
+            for peer_ip, pdata in peers.items():
+                if isinstance(pdata, dict):
+                    if pdata.get("state") == "Established":
+                        is_established = True
+                        pfx_count = pdata.get("pfxRcd", 0)
+                        break
 
-        expected_prefix = "10.77.1.0/24" if device == "router-a" else "10.77.2.0/24"
-        if rib_count == 0 or (is_established and pfx_count == 0):
-            return {
-                "diagnosis": "missing_prefix_origination",
-                "evidence_ids": [ev.get("id") for ev in events] or ["state_snapshot"],
-                "affected_nodes": [device],
-                "action": "originate_prefix",
-                "parameters": {
-                    "device": device,
-                    "prefix": expected_prefix
-                },
-                "verification_checks": ["bgp_session", "expected_routes", "endpoint_ping"],
-                "abstain": False
-            }
+            expected_prefix = "10.77.1.0/24" if device == "router-a" else "10.77.2.0/24"
+            if rib_count == 0 or (is_established and pfx_count == 0):
+                return {
+                    "diagnosis": "missing_prefix_origination",
+                    "evidence_ids": [ev.get("id") for ev in events] or ["state_snapshot"],
+                    "affected_nodes": [device],
+                    "action": "originate_prefix",
+                    "parameters": {
+                        "device": device,
+                        "prefix": expected_prefix
+                    },
+                    "verification_checks": ["bgp_session", "expected_routes", "endpoint_ping"],
+                    "abstain": False
+                }
 
-        if is_established and pfx_count >= 1:
-            return {
-                "diagnosis": "healthy_network",
-                "evidence_ids": ["state_snapshot"],
-                "affected_nodes": [device],
-                "action": "none",
-                "parameters": {"device": device},
-                "verification_checks": ["bgp_session", "expected_routes"],
-                "abstain": True
-            }
+            if is_established and pfx_count >= 1:
+                return {
+                    "diagnosis": "healthy_network",
+                    "evidence_ids": ["state_snapshot"],
+                    "affected_nodes": [device],
+                    "action": "none",
+                    "parameters": {"device": device},
+                    "verification_checks": ["bgp_session", "expected_routes"],
+                    "abstain": True
+                }
 
         # 4. Check for Carrier Loss / Transport Failure (Ambiguous -> must abstain)
         carrier_lost = False

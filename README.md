@@ -42,7 +42,7 @@ An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/
 - [10. 🚀 Scaling to 8B & Two-Tier Co-Pilot (v2 Branch)](#10-the-next-frontier-scaling-to-8b--the-two-tier-co-pilot-architecture-v2-branch)
 - [11. 🌐 NetOps-SLM v3: 4-Node Spine-Leaf CLOS Fabric & ECMP Resilience](#11--netops-slm-v3-4-node-spine-leaf-clos-fabric--ecmp-resilience)
 - [12. 🧠 Phase 4: CLOS Dataset Distillation & Mixture of LoRA Experts (MoLE)](#12-phase-4-clos-dataset-distillation--mixture-of-lora-experts-mole)
-- [13. 🛡️ Phase 5: Digital Twin Verification, Web NOC Dashboard & TokenSpeed Serving](#13-phase-5-batfish-digital-twin-verification-engine--web-noc-dashboard)
+- [13. 🛡️ Phase 5: In-Memory Topology Graph Verifier, Web NOC Dashboard & TokenSpeed Serving](#13-phase-5-in-memory-topology-graph-verifier--web-noc-dashboard)
 - [14. 🧭 Complete Cross-Version Evolution Matrix (v1 vs. v2 vs. v3)](#14-complete-cross-version-evolution-matrix-v1-vs-v2-vs-v3)
 - [15. 💼 Enterprise Architecture & Commercial B2B Go-To-Market (MRR Playbook)](#15-enterprise-architecture--commercial-b2b-go-to-market-mrr-playbook)
 
@@ -92,21 +92,49 @@ An edge-native, zero-cloud-spend architecture for diagnosing and remediating IP/
 ### Core Discoveries:
 1. **The Form vs. Physics Duality:**
    - 4-bit QLoRA fine-tuning **completely solves form and schema contract alignment**—achieving **100.0% syntactically valid NetOps JSON output** and eliminating 100% of conversational preambles, markdown backticks, and parameter creep seen in the base foundation model.
-   - However, for protocol state-machine diagnosis (BGP session transitions, AS number mismatches, and route table deficits), the **Deterministic Runbook achieves 92.0% accuracy in 0.06 ms**, compared to **11.1% accuracy in 19,500 ms** for the fine-tuned edge SLM.
+   - However, for protocol state-machine diagnosis (BGP session transitions, AS number mismatches, and route table deficits), the **Deterministic Runbook achieves 100.0% accuracy in 0.03 ms**, compared to **11.1% accuracy in 19,500 ms** for the fine-tuned edge SLM on the common held-out test suite.
 2. **Zero Unauthorized Commands via Software Gating:**
    - Generative models exhibit an inherent action bias (hallucinating actions on quiescent networks or appending `0.0.0.0/0` subnets).
-   - Our outer-loop [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) intercepted **100% of out-of-scope actions and prompt-injection attacks**, guaranteeing that **0 unauthorized commands were executed across all 25 benchmark episodes**.
+   - Our outer-loop [`TypedActionGate`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/typed_action_gate.py) intercepted **100% of out-of-scope actions and prompt-injection attacks**, guaranteeing that **0 unauthorized commands were executed across all evaluated benchmark episodes**.
 3. **The Recommended Production Architecture:**
-   - **Primary Actuator:** Deterministic Runbook + `TypedActionGate` (instantaneous 0.06 ms, bounded, zero-hallucination remediation).
+   - **Primary Actuator:** Deterministic Runbook + `TypedActionGate` (instantaneous 0.03 ms, bounded, zero-hallucination remediation).
    - **Explanatory Copilot:** Fine-tuned SLM (context compression and human-facing incident post-mortem generation).
 
 ---
 
-## 2. Definitive 3-Way Benchmark Results
+## 2. Definitive Reconciled Benchmark Results
 
-Evaluated across **25 authentic lab episodes** (23 live Containerlab FRR incidents across 5 fault families plus 2 adversarial prompt-injection fixtures):
+To prevent benchmark circularity and mismatched denominators, NetOps-SLM reports evaluation across two clearly separated suites:
+
+### Table 1: Strict Like-for-Like Held-Out Benchmark (Common Denominator n=9)
+Evaluated across the exact same 9 held-out test episodes (7 authentic held-out Containerlab telemetry snapshots covering all 5 fault families + 2 adversarial injection fixtures):
 
 | Metric | Deterministic Runbook | Base SLM (`Qwen2.5-Coder-1.5B`) | Fine-Tuned SLM (4-bit QLoRA) | Production Target |
+| :--- | :---: | :---: | :---: | :---: |
+| **Common Evaluated Episodes** | **9** | **9** | **9** | Common Set (n=9) |
+| **Overall Benchmark Accuracy** | **9/9 (100.0%)** | **1/9 (11.1%)** | **1/9 (11.1%)** | ≥ 80.0% |
+| **Authentic Fault Accuracy** | **7/7 (100.0%)** | **1/7 (14.3%)** | **1/7 (14.3%)** | ≥ 80.0% |
+| **Safe Abstentions** | **4/4 (100.0%)** | **0/4 (0.0%)** | **0/4 (0.0%)** | 100% on healthy/transport |
+| **JSON Schema Compliance** | **100.0%** | 66.7% | **100.0% (Zero Parse Errors)** | 100.0% |
+| **Markdown Backtick Fences** | **0.0%** | 77.8% | **0.0% (Zero Backticks)** | 0.0% |
+| **Adversarial Injections Defended** | **2/2 (100.0% Runbook Abstain)** | **2/2 (100.0% Blocked by Gate)** | **2/2 (100.0% Blocked by Gate)** | 100% Blocked |
+| **Out-of-Scope Commands Executed** | **0 (Zero)** | **0 (Zero)** | **0 (Zero)** | **0 (Zero Tolerance)** |
+| **Average Latency** | **0.03 ms** | **5,112.40 ms** | **19,509.90 ms** | Real-time bounded |
+| **GPU VRAM Overhead** | **0 MiB (0 GPU)** | 1,193 MiB | 3,390 MiB (during training) | ≤ 4,096 MiB |
+
+### Table 2: Full Manifest Corpus Evaluation (n=25)
+Evaluated across all 23 authentic live Containerlab FRR incidents across 5 incident families (`logs/raw/`) plus 2 adversarial safety fixtures:
+
+| Metric | Deterministic Runbook | Base SLM (`Qwen2.5-Coder-1.5B`) | Production Target |
+| :--- | :---: | :---: | :---: |
+| **Total Evaluated Episodes** | **25** | **25** | ≥ 20 Episodes |
+| **Overall Benchmark Accuracy** | **25/25 (100.0%)** | **4/25 (16.0%)** | ≥ 80.0% |
+| **Safe Abstentions** | **9/9 (100.0%)** | **0/9 (0.0%)** | 100% on healthy/transport |
+| **Adversarial Injections Defended** | **2/2 (100.0%)** | **2/2 (100.0% Blocked by Gate)** | 100% Blocked |
+| **Out-of-Scope Commands Executed** | **0 (Zero)** | **0 (Zero)** | **0 (Zero Tolerance)** |
+| **Average Latency** | **0.03 ms** | **5,085.68 ms** | Real-time bounded |
+
+Detailed evaluation logs and per-episode traces are preserved in [`reports/benchmark_held_out.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/benchmark_held_out.md), [`reports/finetuned_model_evaluation.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/finetuned_model_evaluation.md), and [`reports/failure_cases.md`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/reports/failure_cases.md).se SLM (`Qwen2.5-Coder-1.5B`) | Fine-Tuned SLM (4-bit QLoRA) | Production Target |
 | :--- | :---: | :---: | :---: | :---: |
 | **Authentic Fault Accuracy** | **100.0% (20/20)** | **15.0% (3/20)** | **14.3% (1/7 held-out test)** | ≥ 80.0% |
 | **Overall Benchmark Accuracy** | **92.0% (23/25)** | **12.0% (3/25)** | **11.1% (1/9 test suite)** | ≥ 80.0% |
@@ -581,25 +609,25 @@ python src/evaluation/evaluate_mole.py
 
 ---
 
-## 13. Phase 5: Batfish Digital Twin Verification Engine & Web NOC Dashboard
+## 13. Phase 5: In-Memory Topology Graph Verifier & Web NOC Dashboard
 
-Phase 5 equips NetOps-SLM with formal mathematical safety guarantees and an enterprise operator interface for the Network Operations Center (NOC).
+Phase 5 equips NetOps-SLM with automated graph reachability verification and an enterprise operator interface for the Network Operations Center (NOC).
 
-### 13.1 Pre-Flight In-Memory Digital Twin Verification Engine
+### 13.1 Pre-Flight In-Memory Topology Graph Verifier
 
-Before any synthesized action is dispatched to live network hardware or Containerlab switches, the [`digital_twin_verifier.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/digital_twin_verifier.py) engine executes a pre-flight mathematical simulation on an in-memory clone of the network graph:
+Before any synthesized action is dispatched to live network hardware or Containerlab switches, the [`digital_twin_verifier.py`](file:///c:/Users/kali/Downloads/cmdc/NetOps_LLM_and_Jobs/src/verification/digital_twin_verifier.py) engine executes a pre-flight simulation on an in-memory graph representation of the network topology:
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   PRE-FLIGHT DIGITAL TWIN FORMAL VERIFICATION LOOP                     │
+│                   PRE-FLIGHT IN-MEMORY TOPOLOGY GRAPH VERIFICATION LOOP                │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                        │
 │   [ Incident Detected ] ➔ [ MoLE Expert Dispatch ] ➔ [ TypedActionGate Synthesis ]     │
 │                                                                │                       │
 │                                                                ▼                       │
 │                                               ┌─────────────────────────────────┐      │
-│                                               │  Batfish Digital Twin Simulator │      │
-│                                               │  (Pre-Flight In-Memory Proof)   │      │
+│                                               │  In-Memory Graph Verifier (BFS) │      │
+│                                               │  (Pre-Flight Path Reachability) │      │
 │                                               └────────────────┬────────────────┘      │
 │                                                                │                       │
 │                                       ┌────────────────────────┴──────────────┐        │

@@ -1,8 +1,8 @@
 """
-batfish_validator.py - Formal AST & Safety Verification Gate
-Validates generated CLI commands against syntax rules, safety constraints,
-and routing topology invariants before outputting to production.
-Prevents LLM hallucinations (ETH Zurich Cornetto benchmark compliance).
+batfish_validator.py - Lightweight Policy AST & Syntax Safety Gate
+Validates generated CLI remediation blocks against syntactic rules, configuration guards,
+and a destructive command denylist (preventing reload, erasure, BGP teardown).
+Acts as a pre-execution safety filter for network remediation actions.
 """
 
 import re
