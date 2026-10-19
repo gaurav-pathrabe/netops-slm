@@ -482,14 +482,33 @@ class TypedActionGate:
         if not blast_ok:
             rejections.append(f"Blast Radius Exceeded: {len(nodes)} affected nodes > limit {max_allowed_nodes}")
 
-        # 6. Approval Level
-        # Certain actions (like drain_spine_traffic) require human sign-off unless emergency override
-        autonomous_whitelist = ["reenable_bgp_neighbor", "correct_remote_as", "originate_prefix", "isolate_degraded_path", "none"]
+        # 6. Approval Level & Verifier Authority Boundary
+        # The symbolic verifier (Batfish / Digital Twin) proves control-plane invariants:
+        # reachability, loop-freedom, blackhole-freedom, and route policy.
+        # It CANNOT model data-plane capacity, congestion absorption, PFC/ECN buffers, or optic decay.
+        # Therefore, only pure control-plane actions are in the autonomous whitelist.
+        # Actions with data-plane capacity or blast-radius consequences (path isolation, drain)
+        # mandate human supervisor authorization.
+        CONTROL_PLANE_AUTONOMOUS_WHITELIST = [
+            "reenable_bgp_neighbor",
+            "correct_remote_as",
+            "originate_prefix",
+            "none"
+        ]
+        DATA_PLANE_CAPACITY_ACTIONS = [
+            "isolate_degraded_path",
+            "drain_spine_traffic",
+            "restore_spine_path"
+        ]
+
         approval_status = "AUTO_APPROVED"
-        if action not in autonomous_whitelist:
+        if action in DATA_PLANE_CAPACITY_ACTIONS or action not in CONTROL_PLANE_AUTONOMOUS_WHITELIST:
             if not a_ctx.get("approved_by"):
                 approval_status = "REQUIRES_HUMAN"
-                rejections.append(f"Approval Level: Action '{action}' requires supervisor authorization.")
+                rejections.append(
+                    f"Approval Level & Verifier Authority: Action '{action}' has data-plane/capacity "
+                    f"consequences outside formal control-plane verifier authority. Human supervisor authorization required."
+                )
             else:
                 approval_status = "HUMAN_APPROVED"
 

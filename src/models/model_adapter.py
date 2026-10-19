@@ -173,11 +173,13 @@ class FrontierAPIAdapter(ModelAdapter):
 
 class LocalDenseAdapter(ModelAdapter):
     """
-    On-Premise / Edge Dense Model Adapter (Qwen 2.5 14B / Llama 3.3 8B at 4-bit).
-    Served via local vLLM / llama.cpp OpenAI-compatible HTTP endpoint.
+    On-Premise / Edge Dense Model Adapter (Qwen 2.5 7B / Llama 3.1 8B at 4-bit).
+    Selects tool-calling-tuned models (e.g. Qwen2.5-7B-Instruct) for bounded ReAct loops.
+    Avoids pure reasoning models (R1-Distill) which emit thousands of CoT tokens per tool call.
+    Served via local vLLM / llama.cpp OpenAI-compatible HTTP endpoint (~5-6 GB VRAM at 4-bit).
     """
 
-    def __init__(self, model_name: str = "Qwen/Qwen2.5-Coder-14B-Instruct-AWQ", endpoint: str = "http://localhost:8000/v1"):
+    def __init__(self, model_name: str = "Qwen/Qwen2.5-7B-Instruct", endpoint: str = "http://localhost:8000/v1"):
         super().__init__(model_name=model_name, endpoint=endpoint)
 
     def diagnose(

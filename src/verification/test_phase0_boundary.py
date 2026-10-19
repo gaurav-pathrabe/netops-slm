@@ -51,7 +51,7 @@ def test_fault_ontology():
 
     mtu_defn = get_fault_class("CLOS_ASYMMETRIC_MTU_MISMATCH")
     assert mtu_defn is not None
-    assert mtu_defn.safety_tier == SafetyTier.SAFE_AUTONOMOUS
+    assert mtu_defn.safety_tier == SafetyTier.SUPERVISED_APPROVAL
     assert mtu_defn.typed_action == "isolate_degraded_path"
     assert mtu_defn.rollback_action == "restore_spine_path"
 
@@ -135,25 +135,26 @@ def test_ten_gate_checks():
     print("\n[*] 3. Testing The Ten Mandatory Gate Checks in TypedActionGate...")
     gate = TypedActionGate(inventory=CLOS_INVENTORY, enable_digital_twin=True)
 
-    # Test A: Safe autonomous action with active live telemetry
+    # Test A: Pure Control-Plane Autonomous Action (within verifier authority)
     payload_a = {
-        "diagnosis": "CLOS_ASYMMETRIC_MTU_MISMATCH",
-        "evidence_ids": ["ping_jumbo_drop_01"],
+        "diagnosis": "BGP_NEIGHBOR_ADMIN_DOWN",
+        "evidence_ids": ["bgp_state_idle_admin_01"],
         "affected_nodes": ["leaf-1"],
-        "action": "isolate_degraded_path",
-        "parameters": {"device": "leaf-1", "interface": "eth1"},
-        "verification_checks": ["zero_loss_post_failover"],
+        "action": "reenable_bgp_neighbor",
+        "parameters": {"device": "leaf-1", "neighbor": "10.77.0.2"},
+        "verification_checks": ["bgp_established_post_remediation"],
         "abstain": False
     }
-    telemetry_a = {"packet_loss": 100.0, "crc_errors": 0}
+    telemetry_a = {"bgp": {"peer_state": "Idle"}}
     res_a = gate.evaluate_ten_checks(payload_a, initial_telemetry=telemetry_a, incident_id="INC_TEST_A")
     assert res_a["all_passed"] is True, f"Expected all passed, got rejections: {res_a['rejections']}"
+    assert res_a["check_6_approval_level"] == "AUTO_APPROVED"
     assert res_a["check_8_rollback_defined"] is True
-    assert "ip link set dev eth1 up" in res_a["rollback_command"]
-    print("    [+] Test A (Safe Autonomous Action): All 10 Checks Passed.")
+    assert "neighbor 10.77.0.2 shutdown" in res_a["rollback_command"]
+    print("    [+] Test A (Safe Autonomous Control-Plane Action): All 10 Checks Passed.")
 
-    # Test B: Live Precondition Failure (trying to isolate path with zero packet loss)
-    telemetry_b = {"packet_loss": 0.0, "crc_errors": 0}
+    # Test B: Live Precondition Failure (trying to re-enable neighbor that is already Established)
+    telemetry_b = {"bgp": {"peer_state": "Established"}}
     res_b = gate.evaluate_ten_checks(payload_a, initial_telemetry=telemetry_b, incident_id="INC_TEST_B")
     assert res_b["all_passed"] is False
     assert res_b["check_3_live_preconditions"] is False
@@ -169,35 +170,44 @@ def test_ten_gate_checks():
     # Test D: Shell Injection Attempt
     payload_d = {
         **payload_a,
-        "parameters": {"device": "leaf-1; rm -rf /", "interface": "eth1"}
+        "parameters": {"device": "leaf-1; rm -rf /", "neighbor": "10.77.0.2"}
     }
     res_d = gate.evaluate_ten_checks(payload_d, incident_id="INC_TEST_D")
     assert res_d["all_passed"] is False
     assert res_d["check_1_schema_valid"] is False
     print("    [+] Test D (Shell Injection Attempt): Correctly Intercepted.")
 
-    # Test E: Action Requiring Human Supervisor Authorization (e.g. drain_spine_traffic)
+    # Test E: Action Outside Verifier Authority (e.g. isolate_degraded_path or drain_spine_traffic)
+    # Even though reachability is preserved, verifier cannot prove data-plane capacity absorption.
     payload_e = {
-        "diagnosis": "CLOS_ECMP_ROUTE_BLACKHOLE",
-        "evidence_ids": ["rib_discrepancy_01"],
-        "affected_nodes": ["spine-1"],
-        "action": "drain_spine_traffic",
-        "parameters": {"device": "spine-1", "neighbor": "10.77.0.1"},
+        "diagnosis": "OPTICAL_TRANSCEIVER_DECAY",
+        "evidence_ids": ["crc_rate_8000x_baseline"],
+        "affected_nodes": ["leaf-1"],
+        "action": "isolate_degraded_path",
+        "parameters": {"device": "leaf-1", "interface": "eth1"},
         "verification_checks": ["ecmp_rebalance"],
         "abstain": False
     }
-    # E1: Without approval -> Blocked
-    res_e1 = gate.evaluate_ten_checks(payload_e, incident_id="INC_TEST_E1")
+    telemetry_e = {"packet_loss": 100.0, "crc_errors": 14200}
+
+    # E1: Without human supervisor sign-off -> Blocked by Verifier Authority Boundary
+    res_e1 = gate.evaluate_ten_checks(payload_e, initial_telemetry=telemetry_e, incident_id="INC_TEST_E1")
     assert res_e1["all_passed"] is False
     assert res_e1["check_6_approval_level"] == "REQUIRES_HUMAN"
-    print("    [+] Test E1 (Supervised Action Without Approval): Blocked as REQUIRES_HUMAN.")
+    print("    [+] Test E1 (Capacity Mitigation Without Approval): Blocked as REQUIRES_HUMAN (Verifier Authority Boundary).")
 
-    # E2: With human approval -> Passed
-    res_e2 = gate.evaluate_ten_checks(payload_e, approval_context={"approved_by": "sec_operator_42"}, incident_id="INC_TEST_E2")
+    # E2: With human supervisor sign-off -> Passed as HUMAN_APPROVED
+    res_e2 = gate.evaluate_ten_checks(
+        payload_e,
+        initial_telemetry=telemetry_e,
+        approval_context={"approved_by": "sec_operator_42"},
+        incident_id="INC_TEST_E2"
+    )
     assert res_e2["all_passed"] is True
     assert res_e2["check_6_approval_level"] == "HUMAN_APPROVED"
-    assert "route-map RM_DRAIN" in res_e2["execution_command"]
-    print("    [+] Test E2 (Supervised Action With Human Approval): Passed as HUMAN_APPROVED.")
+    assert "ip link set dev eth1 down" in res_e2["execution_command"]
+    assert "ip link set dev eth1 up" in res_e2["rollback_command"]
+    print("    [+] Test E2 (Capacity Mitigation With Human Approval): Passed as HUMAN_APPROVED.")
 
 
 if __name__ == "__main__":

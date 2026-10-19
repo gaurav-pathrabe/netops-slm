@@ -118,10 +118,10 @@ FAULT_ONTOLOGY_V1: Dict[str, FaultClassDefinition] = {
         diagnostic_tools=["check_canary_loss", "read_interface_counters", "inspect_interface_mtu"],
         typed_action="isolate_degraded_path",
         rollback_action="restore_spine_path",
-        safety_tier=SafetyTier.SAFE_AUTONOMOUS,
+        safety_tier=SafetyTier.SUPERVISED_APPROVAL,
         supported_vendors=[VendorNOS.FRR, VendorNOS.SONIC, VendorNOS.CEOS],
-        invariants=["Only transit uplinks may be isolated; access/mgmt interfaces protected."],
-        description="Isolates degraded transit uplink to divert jumbo traffic to healthy ECMP paths."
+        invariants=["Isolating transit uplink reduces fabric capacity; requires human approval."],
+        description="Path isolation is a temporary mitigation to divert jumbo traffic. Requires human authorization due to capacity/blast-radius impact."
     ),
 
     # 5. Severed Spine Link
@@ -176,10 +176,10 @@ FAULT_ONTOLOGY_V1: Dict[str, FaultClassDefinition] = {
         diagnostic_tools=["read_interface_counters", "inspect_dom_optical_power"],
         typed_action="isolate_degraded_path",
         rollback_action="restore_spine_path",
-        safety_tier=SafetyTier.SAFE_AUTONOMOUS,
+        safety_tier=SafetyTier.SUPERVISED_APPROVAL,
         supported_vendors=[VendorNOS.SONIC, VendorNOS.CEOS, VendorNOS.VJUNOS],
-        invariants=["Alternative ECMP capacity must be >= 50%."],
-        description="Isolates the optical port to prevent silent corruption from poisoning AI collective calls."
+        invariants=["Path isolation is a temporary mitigation; root fix is physical optic replacement."],
+        description="Raises alarm and recommends physical transceiver replacement. Optional path isolation mitigation requires human supervisor approval due to capacity blast-radius."
     ),
 
     # 8. Rapid Route Flapping (Anti-Oscillation Guard)
